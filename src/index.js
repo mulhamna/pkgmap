@@ -43,7 +43,7 @@ export async function run(options) {
 
   // Run all scanners in parallel
   const settled = await Promise.allSettled(
-    scanners.map(async ([name, scanFn]) => {
+    scanners.map(async ([_name, scanFn]) => {
       const result = await scanFn()
       return result
     })

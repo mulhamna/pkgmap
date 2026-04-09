@@ -15,7 +15,12 @@ export const MANAGER_ICONS = {
 export function renderBanner() {
   console.log()
   console.log(chalk.cyan('  ╔═══════════════════════════════════╗'))
-  console.log(chalk.cyan('  ║') + chalk.bold('  📦 pkgmap  ') + chalk.dim('v0.1.0') + chalk.cyan('               ║'))
+  console.log(
+    chalk.cyan('  ║') +
+      chalk.bold('  📦 pkgmap  ') +
+      chalk.dim('v0.1.0') +
+      chalk.cyan('               ║')
+  )
   console.log(chalk.cyan('  ╚═══════════════════════════════════╝'))
   console.log()
 }
@@ -29,18 +34,21 @@ export function renderSummary(results) {
   const total = results.reduce((sum, r) => sum + r.packages.length, 0)
 
   console.log('  ' + parts.join(chalk.dim('  ·  ')))
-  console.log('  ' + chalk.dim(`Total: ${chalk.bold.white(total)} packages across ${results.length} manager(s)`))
+  console.log(
+    '  ' +
+      chalk.dim(`Total: ${chalk.bold.white(total)} packages across ${results.length} manager(s)`)
+  )
   console.log()
 }
 
 const TYPE_COLORS = {
-  formula:  (s) => chalk.blue(s),
-  cask:     (s) => chalk.magenta(s),
-  cli:      (s) => chalk.cyan(s),
-  library:  (s) => chalk.green(s),
-  binary:   (s) => chalk.red(s),
-  runtime:  (s) => chalk.yellow(s),
-  gem:      (s) => chalk.magenta(s),
+  formula: (s) => chalk.blue(s),
+  cask: (s) => chalk.magenta(s),
+  cli: (s) => chalk.cyan(s),
+  library: (s) => chalk.green(s),
+  binary: (s) => chalk.red(s),
+  runtime: (s) => chalk.yellow(s),
+  gem: (s) => chalk.magenta(s),
 }
 
 function colorType(type) {
@@ -62,12 +70,7 @@ export function renderAll(results) {
   }
 
   const table = new Table({
-    head: [
-      chalk.bold('Manager'),
-      chalk.bold('Package'),
-      chalk.bold('Version'),
-      chalk.bold('Type'),
-    ],
+    head: [chalk.bold('Manager'), chalk.bold('Package'), chalk.bold('Version'), chalk.bold('Type')],
     colWidths: [10, 36, 18, 12],
     style: { head: [], border: [] },
   })

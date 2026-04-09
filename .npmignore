@@ -1,0 +1,13 @@
+# Dev config
+.prettierrc
+eslint.config.js
+
+# CI
+.github/
+
+# Docs
+claude.md
+CLAUDE.md
+
+# Dev dependencies artifact
+node_modules/

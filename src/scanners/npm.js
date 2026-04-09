@@ -17,8 +17,12 @@ export default async function scan() {
 
     let globalRoot = ''
     try {
-      globalRoot = execSync('npm root -g', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
-    } catch {}
+      globalRoot = execSync('npm root -g', { stdio: ['ignore', 'pipe', 'ignore'] })
+        .toString()
+        .trim()
+    } catch (_err) {
+      /* npm root -g unavailable */
+    }
 
     const packages = Object.entries(deps).map(([name, info]) => {
       let type = 'library'
@@ -26,7 +30,9 @@ export default async function scan() {
         try {
           const pkgJson = JSON.parse(readFileSync(join(globalRoot, name, 'package.json'), 'utf8'))
           if (pkgJson.bin) type = 'cli'
-        } catch {}
+        } catch (_err) {
+          /* package.json unreadable, default to library */
+        }
       }
       return { name, version: info.version || 'unknown', type }
     })
