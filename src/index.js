@@ -51,10 +51,10 @@ export async function run(options) {
 
   spinner.stop()
 
-  // Collect successful, non-null results
+  // Collect successful, non-null results with at least 1 package
   let results = settled
     .map((s) => (s.status === 'fulfilled' ? s.value : null))
-    .filter(Boolean)
+    .filter((r) => r && r.packages.length > 0)
 
   if (results.length === 0) {
     console.log(chalk.yellow('No package managers found or all scans failed.'))
