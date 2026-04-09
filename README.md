@@ -60,29 +60,26 @@ Only managers that are **installed and have packages** will appear in the output
 
 ## Install
 
-### Via npm (recommended)
+> **Note:** pkgmap is not yet published to npm. Please use the manual install below.
+
+### Manual install (recommended for now)
 
 ```bash
-npm install -g pkgmap
-```
-
-Also works with pnpm, yarn, and volta:
-
-```bash
-pnpm add -g pkgmap
-yarn global add pkgmap
-volta install pkgmap
-```
-
-### Local dev
-
-```bash
-git clone https://github.com/<username>/pkgmap.git
+git clone https://github.com/mulhamna/pkgmap.git
 cd pkgmap
 npm install
 npm link
 
 pkgmap
+```
+
+### Via npm *(coming soon)*
+
+```bash
+npm install -g pkgmap
+pnpm add -g pkgmap
+yarn global add pkgmap
+volta install pkgmap
 ```
 
 ---
