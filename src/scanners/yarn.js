@@ -14,11 +14,9 @@ export default async function scan() {
     const lines = raw.split('\n')
 
     for (const line of lines) {
-      // yarn global list output: info "<name>@<version>" has binaries: ...
-      // or: └─ <name>@<version>
       const match = line.match(/info\s+"([^@]+)@([^"]+)"/) || line.match(/[└├─]+\s+([^@]+)@(\S+)/)
       if (match) {
-        packages.push({ name: match[1].trim(), version: match[2].trim() })
+        packages.push({ name: match[1].trim(), version: match[2].trim(), type: 'cli' })
       }
     }
 

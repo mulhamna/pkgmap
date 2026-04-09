@@ -16,6 +16,7 @@ export default async function scan() {
     const packages = Object.entries(deps).map(([name, info]) => ({
       name,
       version: info.version || 'unknown',
+      type: 'cli',
     }))
 
     return { manager: 'pnpm', packages }

@@ -14,10 +14,9 @@ export default async function scan() {
     const lines = raw.split('\n').filter(Boolean)
 
     for (const line of lines) {
-      // volta list --format=plain output: "tool <name>@<version> ..."
       const match = line.match(/^(?:tool\s+)?([^\s@]+)@(\S+)/)
       if (match) {
-        packages.push({ name: match[1].trim(), version: match[2].trim() })
+        packages.push({ name: match[1].trim(), version: match[2].trim(), type: 'runtime' })
       }
     }
 

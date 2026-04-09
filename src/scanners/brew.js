@@ -6,20 +6,27 @@ export default async function scan() {
   if (!isAvailable('brew')) return null
 
   try {
-    const raw = execSync('brew list --versions', {
+    const raw = execSync('brew info --json=v2 --installed', {
       stdio: ['ignore', 'pipe', 'ignore'],
       timeout: 10000,
     }).toString()
 
-    const packages = raw
-      .split('\n')
-      .filter(Boolean)
-      .map((line) => {
-        const parts = line.trim().split(/\s+/)
-        const name = parts[0]
-        const version = parts[parts.length - 1] || 'unknown'
-        return { name, version }
-      })
+    const parsed = JSON.parse(raw)
+    const formulae = parsed.formulae || []
+    const casks = parsed.casks || []
+
+    const packages = [
+      ...formulae.map((f) => ({
+        name: f.name,
+        version: f.installed?.[0]?.version || 'unknown',
+        type: 'formula',
+      })),
+      ...casks.map((c) => ({
+        name: c.token,
+        version: c.installed || 'unknown',
+        type: 'cask',
+      })),
+    ]
 
     return { manager: 'brew', packages }
   } catch (err) {

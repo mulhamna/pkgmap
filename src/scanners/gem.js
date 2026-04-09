@@ -15,11 +15,10 @@ export default async function scan() {
     const lines = raw.split('\n').filter(Boolean)
 
     for (const line of lines) {
-      // gem list output: "<name> (<version>, <version>, ...)"
       const match = line.match(/^([^\s(]+)\s+\(([^)]+)\)/)
       if (match) {
         const versions = match[2].split(',').map((v) => v.trim())
-        packages.push({ name: match[1].trim(), version: versions[0] })
+        packages.push({ name: match[1].trim(), version: versions[0], type: 'gem' })
       }
     }
 

@@ -1,4 +1,6 @@
 import { execSync } from 'child_process'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import { isAvailable } from '../utils.js'
 
 export default async function scan() {
@@ -13,10 +15,21 @@ export default async function scan() {
     const parsed = JSON.parse(raw)
     const deps = parsed.dependencies || {}
 
-    const packages = Object.entries(deps).map(([name, info]) => ({
-      name,
-      version: info.version || 'unknown',
-    }))
+    let globalRoot = ''
+    try {
+      globalRoot = execSync('npm root -g', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+    } catch {}
+
+    const packages = Object.entries(deps).map(([name, info]) => {
+      let type = 'library'
+      if (globalRoot) {
+        try {
+          const pkgJson = JSON.parse(readFileSync(join(globalRoot, name, 'package.json'), 'utf8'))
+          if (pkgJson.bin) type = 'cli'
+        } catch {}
+      }
+      return { name, version: info.version || 'unknown', type }
+    })
 
     return { manager: 'npm', packages }
   } catch (err) {

@@ -14,10 +14,9 @@ export default async function scan() {
     const lines = raw.split('\n').filter(Boolean)
 
     for (const line of lines) {
-      // cargo install --list output: "<name> v<version>:"
       const match = line.match(/^([^\s]+)\s+v([^\s:]+):/)
       if (match) {
-        packages.push({ name: match[1].trim(), version: match[2].trim() })
+        packages.push({ name: match[1].trim(), version: match[2].trim(), type: 'binary' })
       }
     }
 

@@ -15,6 +15,7 @@ export default async function scan() {
     const packages = parsed.map((pkg) => ({
       name: pkg.name,
       version: pkg.version,
+      type: 'library',
     }))
 
     return { manager: 'pip', packages }
