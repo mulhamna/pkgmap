@@ -11,3 +11,6 @@ CLAUDE.md
 
 # Dev dependencies artifact
 node_modules/
+
+# macOS
+.DS_Store

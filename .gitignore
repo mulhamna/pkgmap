@@ -1,3 +1,9 @@
+# macOS
+.DS_Store
+
+# pkgmap export output
+pkgmap-export.json
+
 # Logs
 logs
 *.log
