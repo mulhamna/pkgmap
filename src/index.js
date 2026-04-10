@@ -75,6 +75,8 @@ export async function run(options) {
       console.log(chalk.yellow(`No packages found matching "${searchTerm}".`))
       return
     }
+
+    console.log(chalk.cyan(`Found ${results.reduce((sum, r) => sum + r.packages.length, 0)} matching package(s) for "${searchTerm}".`))
   }
 
   // Export to JSON
@@ -85,6 +87,7 @@ export async function run(options) {
     }
     writeFileSync('pkgmap-export.json', JSON.stringify(exportData, null, 2))
     console.log(chalk.green('✔ Exported to pkgmap-export.json'))
+    if (!searchTerm) return
   }
 
   renderAll(results)
