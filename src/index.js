@@ -10,6 +10,9 @@ import voltaScanner from './scanners/volta.js'
 import pipScanner from './scanners/pip.js'
 import cargoScanner from './scanners/cargo.js'
 import gemScanner from './scanners/gem.js'
+import aptScanner from './scanners/apt.js'
+import flatpakScanner from './scanners/flatpak.js'
+import snapScanner from './scanners/snap.js'
 import { renderAll } from './display/table.js'
 
 const ALL_SCANNERS = {
@@ -21,6 +24,9 @@ const ALL_SCANNERS = {
   pip: pipScanner,
   cargo: cargoScanner,
   gem: gemScanner,
+  apt: aptScanner,
+  flatpak: flatpakScanner,
+  snap: snapScanner,
 }
 
 export async function run(options) {
@@ -75,6 +81,8 @@ export async function run(options) {
       console.log(chalk.yellow(`No packages found matching "${searchTerm}".`))
       return
     }
+
+    console.log(chalk.cyan(`Found ${results.reduce((sum, r) => sum + r.packages.length, 0)} matching package(s) for "${searchTerm}".`))
   }
 
   // Export to JSON
@@ -85,6 +93,7 @@ export async function run(options) {
     }
     writeFileSync('pkgmap-export.json', JSON.stringify(exportData, null, 2))
     console.log(chalk.green('✔ Exported to pkgmap-export.json'))
+    if (searchTerm) return
   }
 
   renderAll(results)
