@@ -14,9 +14,14 @@ export default async function scan() {
       .split('\n')
       .map((line) => line.trim())
       .filter(Boolean)
+      .filter((line) => !line.startsWith('Application'))
       .map((line) => {
-        const [name, version] = line.split(/\s{2,}/)
-        return { name: name?.trim(), version: version?.trim() || 'unknown', type: 'app' }
+        const parts = line.split(/\s{2,}/)
+        return {
+          name: parts[0]?.trim(),
+          version: parts[1]?.trim() || 'unknown',
+          type: 'app',
+        }
       })
       .filter((pkg) => pkg.name)
 

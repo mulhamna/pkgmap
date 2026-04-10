@@ -14,7 +14,9 @@ export default async function scan() {
     const packages = []
 
     for (const line of lines.slice(1)) {
-      const parts = line.trim().split(/\s+/)
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('Name')) continue
+      const parts = trimmed.split(/\s+/)
       if (parts.length >= 2) {
         packages.push({ name: parts[0], version: parts[1], type: 'snap' })
       }

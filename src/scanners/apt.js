@@ -2,10 +2,10 @@ import { execSync } from 'child_process'
 import { isAvailable } from '../utils.js'
 
 export default async function scan() {
-  if (!isAvailable('apt') || !isAvailable('dpkg-query')) return null
+  if (!isAvailable('dpkg-query')) return null
 
   try {
-    const raw = execSync('dpkg-query -W -f="${binary:Package}\t${Version}\n"', {
+    const raw = execSync('dpkg-query -W -f="${Package}\t${Version}\n"', {
       stdio: ['ignore', 'pipe', 'ignore'],
       timeout: 10000,
     }).toString()
