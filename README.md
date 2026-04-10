@@ -69,7 +69,7 @@ Only managers that are **installed and have packages** will appear in the output
 
 ## Install
 
-> **Note:** pkgmap is not yet published to npm. Please use the manual install below.
+> **Note:** pkgmap is published to npm as `@mulham28/pkgmap`. You can install it directly or use the manual install below.
 
 ### Manual install (recommended for now)
 
@@ -86,13 +86,13 @@ pkgmap
 
 > **Tip (Windows):** Run your terminal (PowerShell or CMD) as **Administrator** before running `npm link`.
 
-### Via npm *(coming soon)*
+### Via npm
 
 ```bash
-npm install -g pkgmap
-pnpm add -g pkgmap
-yarn global add pkgmap
-volta install pkgmap
+npm install -g @mulham28/pkgmap
+pnpm add -g @mulham28/pkgmap
+yarn global add @mulham28/pkgmap
+volta install @mulham28/pkgmap
 ```
 
 ---

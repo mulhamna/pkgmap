@@ -1,5 +1,5 @@
 {
-  "name": "pkgmap",
+  "name": "@mulham28/pkgmap",
   "version": "0.1.0",
   "type": "module",
   "description": "One command to see everything installed on your machine",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/mulhamna/pkgmap#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mulhamna/pkgmap.git"
+    "url": "git+https://github.com/mulhamna/pkgmap.git"
   },
   "bugs": {
     "url": "https://github.com/mulhamna/pkgmap/issues"
@@ -30,7 +30,7 @@
     "node": ">=18.0.0"
   },
   "bin": {
-    "pkgmap": "./bin/pkgmap.js"
+    "pkgmap": "bin/pkgmap.js"
   },
   "scripts": {
     "lint": "eslint src/",
