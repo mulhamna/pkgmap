@@ -7,9 +7,10 @@ export default async function scan() {
   if (!isAvailable('npm')) return null
 
   try {
+    const timeout = process.platform === 'win32' ? 30000 : 10000
     const raw = execSync('npm list -g --depth=0 --json', {
       stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 10000,
+      timeout,
     }).toString()
 
     const parsed = JSON.parse(raw)

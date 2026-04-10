@@ -20,16 +20,16 @@ No more switching between `npm list -g`, `brew list`, `pip list`, and so on. One
 
 ## Supported Package Managers
 
-| Icon | Manager | Command Used |
-|------|---------|-------------|
-| 📦 | npm | `npm list -g --depth=0 --json` |
-| 📦 | pnpm | `pnpm list -g --depth=0 --json` |
-| 🧶 | yarn | `yarn global list --depth=0` |
-| 🍺 | brew | `brew info --json=v2 --installed` |
-| ⚡ | volta | `volta list --format=plain` |
-| 🐍 | pip | `pip3 list --format=json` |
-| 🦀 | cargo | `cargo install --list` |
-| 💎 | gem | `gem list` |
+| Icon | Manager | Command Used | macOS | Linux | Windows |
+|------|---------|-------------|:-----:|:-----:|:-------:|
+| 📦 | npm | `npm list -g --depth=0 --json` | ✅ | ✅ | ✅ |
+| 📦 | pnpm | `pnpm list -g --depth=0 --json` | ✅ | ✅ | ✅ |
+| 🧶 | yarn | `yarn global list --depth=0` | ✅ | ✅ | ✅ |
+| 🍺 | brew | `brew info --json=v2 --installed` | ✅ | ✅ | ❌ |
+| ⚡ | volta | `volta list --format=plain` | ✅ | ✅ | ✅ |
+| 🐍 | pip | `pip3 list --format=json` | ✅ | ✅ | ✅ |
+| 🦀 | cargo | `cargo install --list` | ✅ | ✅ | ✅ |
+| 💎 | gem | `gem list` | ✅ | ✅ | ❌ |
 
 Only managers that are **installed and have packages** will appear in the output.
 
@@ -58,6 +58,15 @@ Only managers that are **installed and have packages** will appear in the output
 
 ---
 
+## Prerequisites
+
+- **Node.js >= 18** — required for ESM support. Check with `node --version`.
+- **npm** — comes bundled with Node.js.
+
+> If you don't have Node.js, install it from [nodejs.org](https://nodejs.org) or via a version manager like [nvm](https://github.com/nvm-sh/nvm).
+
+---
+
 ## Install
 
 > **Note:** pkgmap is not yet published to npm. Please use the manual install below.
@@ -72,6 +81,10 @@ npm link
 
 pkgmap
 ```
+
+> **Tip (macOS/Linux):** If `npm link` fails with a permission error, either use `sudo npm link`, or better yet, use [nvm](https://github.com/nvm-sh/nvm) to manage Node.js without needing sudo.
+
+> **Tip (Windows):** Run your terminal (PowerShell or CMD) as **Administrator** before running `npm link`.
 
 ### Via npm *(coming soon)*
 
@@ -122,9 +135,9 @@ pkgmap --export
 - **Manager not installed** → silently skipped, won't appear in output
 - **Manager installed but no global packages** → also skipped (no empty tables)
 - **Permission errors** → shows `⚠ <manager>: permission denied. Try running with sudo.`
-- **Slow scanners** → 10 second timeout per scanner, skipped with a warning if exceeded
+- **Slow scanners** → timeout per scanner (10s on macOS/Linux, 30s on Windows), skipped with a warning if exceeded
 - **Duplicate packages** (same package in multiple managers) → shown in both, highlighted in yellow with a `↔ <other manager>` badge
-- **Windows** → brew and gem are skipped automatically; `where` used instead of `which`
+- **Windows** → brew and gem are skipped automatically; `where` used instead of `which`; longer timeouts applied for slower file system operations
 
 ---
 
