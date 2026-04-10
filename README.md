@@ -118,6 +118,28 @@ pkgmap --export
 
 ---
 
+
+### Search example
+
+```bash
+pkgmap --search git
+```
+
+Example output:
+
+```text
+Package found: git
+  Manager: brew
+  Version: 2.44.0
+  Type: formula
+```
+
+### Troubleshooting
+
+- If `npm link` or global installs fail, check your Node.js / npm PATH.
+- Permission errors usually mean the global npm prefix needs adjustment or a version manager like `nvm`.
+- If a package manager is missing, `pkgmap` will skip it silently.
+
 ## Flags
 
 | Flag | Shorthand | Description |
