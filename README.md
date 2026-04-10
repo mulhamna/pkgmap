@@ -205,3 +205,11 @@ MIT — see [LICENSE](./LICENSE) for details.
 - Consider a small CI badge / workflow to validate the CLI on push.
 - Clarify install docs by keeping the npm package name (`@mulham28/pkgmap`) prominent.
 - Add a short “Troubleshooting” section for permission/path issues.
+
+
+## Upcoming scanner ideas
+
+- `apt/dpkg`
+- `flatpak`
+- `snap`
+
