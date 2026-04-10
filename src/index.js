@@ -93,7 +93,7 @@ export async function run(options) {
     }
     writeFileSync('pkgmap-export.json', JSON.stringify(exportData, null, 2))
     console.log(chalk.green('✔ Exported to pkgmap-export.json'))
-    if (!searchTerm) return
+    if (searchTerm) return
   }
 
   renderAll(results)
