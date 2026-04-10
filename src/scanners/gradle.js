@@ -24,6 +24,7 @@ export default async function scan() {
       const artifactDirs = readdirSync(groupPath, { withFileTypes: true }).filter((d) =>
         d.isDirectory()
       )
+      const artifactDirs = readdirSync(groupPath, { withFileTypes: true }).filter((d) => d.isDirectory())
 
       for (const artifactDir of artifactDirs) {
         const artifactPath = join(groupPath, artifactDir.name)
@@ -48,4 +49,5 @@ export default async function scan() {
     }
     return null
   }
+}
 }
