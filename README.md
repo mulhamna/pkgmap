@@ -175,3 +175,11 @@ export default async function scan() {
 ## License
 
 MIT — see [LICENSE](./LICENSE) for details.
+
+
+## Review notes
+
+- Add a `--search` example output in README.
+- Consider a small CI badge / workflow to validate the CLI on push.
+- Clarify install docs by keeping the npm package name (`@mulham28/pkgmap`) prominent.
+- Add a short “Troubleshooting” section for permission/path issues.
