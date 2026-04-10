@@ -8,6 +8,8 @@
 - Prerequisites section in README (Node.js >= 18 requirement)
 - Windows install tip in README (run terminal as Administrator for `npm link`)
 - Platform compatibility table in README showing which managers support macOS / Linux / Windows
+- New scanners: composer, gradle, maven, nuget
+- Linux scanners: apt and yum
 
 ---
 

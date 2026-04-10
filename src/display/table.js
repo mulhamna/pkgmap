@@ -10,6 +10,12 @@ export const MANAGER_ICONS = {
   pip: '🐍',
   cargo: '🦀',
   gem: '💎',
+  composer: '🎼',
+  gradle: '🐘',
+  maven: '☕',
+  nuget: '🔷',
+  apt: '🐧',
+  yum: '🛠',
 }
 
 export function renderBanner() {
@@ -49,6 +55,10 @@ const TYPE_COLORS = {
   binary: (s) => chalk.red(s),
   runtime: (s) => chalk.yellow(s),
   gem: (s) => chalk.magenta(s),
+  php: (s) => chalk.blue(s),
+  java: (s) => chalk.yellow(s),
+  dotnet: (s) => chalk.cyan(s),
+  system: (s) => chalk.white(s),
 }
 
 function colorType(type) {

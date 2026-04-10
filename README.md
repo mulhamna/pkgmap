@@ -30,6 +30,12 @@ No more switching between `npm list -g`, `brew list`, `pip list`, and so on. One
 | 🐍 | pip | `pip3 list --format=json` | ✅ | ✅ | ✅ |
 | 🦀 | cargo | `cargo install --list` | ✅ | ✅ | ✅ |
 | 💎 | gem | `gem list` | ✅ | ✅ | ❌ |
+| 🎼 | composer | `composer global show --format=json` | ✅ | ✅ | ✅ |
+| 🐘 | gradle | scan `~/.gradle/caches/modules-2/files-2.1` | ✅ | ✅ | ✅ |
+| ☕ | maven | scan `~/.m2/repository` | ✅ | ✅ | ✅ |
+| 🔷 | nuget | scan global packages (`dotnet/nuget locals`) | ✅ | ✅ | ✅ |
+| 🐧 | apt | `apt list --installed` | ❌ | ✅ | ❌ |
+| 🛠 | yum | `yum list installed -q` | ❌ | ✅ | ❌ |
 
 Only managers that are **installed and have packages** will appear in the output.
 

@@ -10,6 +10,12 @@ import voltaScanner from './scanners/volta.js'
 import pipScanner from './scanners/pip.js'
 import cargoScanner from './scanners/cargo.js'
 import gemScanner from './scanners/gem.js'
+import composerScanner from './scanners/composer.js'
+import gradleScanner from './scanners/gradle.js'
+import mavenScanner from './scanners/maven.js'
+import nugetScanner from './scanners/nuget.js'
+import aptScanner from './scanners/apt.js'
+import yumScanner from './scanners/yum.js'
 import { renderAll } from './display/table.js'
 
 const ALL_SCANNERS = {
@@ -21,6 +27,12 @@ const ALL_SCANNERS = {
   pip: pipScanner,
   cargo: cargoScanner,
   gem: gemScanner,
+  composer: composerScanner,
+  gradle: gradleScanner,
+  maven: mavenScanner,
+  nuget: nugetScanner,
+  apt: aptScanner,
+  yum: yumScanner,
 }
 
 export async function run(options) {
