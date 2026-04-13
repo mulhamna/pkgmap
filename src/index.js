@@ -10,9 +10,14 @@ import voltaScanner from './scanners/volta.js'
 import pipScanner from './scanners/pip.js'
 import cargoScanner from './scanners/cargo.js'
 import gemScanner from './scanners/gem.js'
+import composerScanner from './scanners/composer.js'
+import gradleScanner from './scanners/gradle.js'
+import mavenScanner from './scanners/maven.js'
+import nugetScanner from './scanners/nuget.js'
 import aptScanner from './scanners/apt.js'
 import flatpakScanner from './scanners/flatpak.js'
 import snapScanner from './scanners/snap.js'
+import yumScanner from './scanners/yum.js'
 import { renderAll } from './display/table.js'
 
 const ALL_SCANNERS = {
@@ -24,15 +29,19 @@ const ALL_SCANNERS = {
   pip: pipScanner,
   cargo: cargoScanner,
   gem: gemScanner,
+  composer: composerScanner,
+  gradle: gradleScanner,
+  maven: mavenScanner,
+  nuget: nugetScanner,
   apt: aptScanner,
   flatpak: flatpakScanner,
   snap: snapScanner,
+  yum: yumScanner,
 }
 
 export async function run(options) {
   const { manager: filterManager, search: searchTerm, export: doExport } = options
 
-  // Determine which scanners to run
   let scanners = Object.entries(ALL_SCANNERS)
 
   if (filterManager) {
@@ -47,7 +56,6 @@ export async function run(options) {
 
   const spinner = ora('Scanning package managers...').start()
 
-  // Run all scanners in parallel
   const settled = await Promise.allSettled(
     scanners.map(async ([_name, scanFn]) => {
       const result = await scanFn()
@@ -57,7 +65,6 @@ export async function run(options) {
 
   spinner.stop()
 
-  // Collect successful, non-null results with at least 1 package
   let results = settled
     .map((s) => (s.status === 'fulfilled' ? s.value : null))
     .filter((r) => r && r.packages.length > 0)
@@ -67,7 +74,6 @@ export async function run(options) {
     return
   }
 
-  // Apply search filter
   if (searchTerm) {
     const term = searchTerm.toLowerCase()
     results = results
@@ -82,10 +88,13 @@ export async function run(options) {
       return
     }
 
-    console.log(chalk.cyan(`Found ${results.reduce((sum, r) => sum + r.packages.length, 0)} matching package(s) for "${searchTerm}".`))
+    console.log(
+      chalk.cyan(
+        `Found ${results.reduce((sum, r) => sum + r.packages.length, 0)} matching package(s) for "${searchTerm}".`
+      )
+    )
   }
 
-  // Export to JSON
   if (doExport) {
     const exportData = {
       generatedAt: new Date().toISOString(),

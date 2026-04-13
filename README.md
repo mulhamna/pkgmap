@@ -1,10 +1,10 @@
 # pkgmap
 
-> One command to see everything installed on your machine — across all package managers.
+> One command to see everything installed on your machine, across all your package managers.
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v0.1.0               ║
+  ║  📦 pkgmap  v0.3.0               ║
   ╚═══════════════════════════════════╝
 ```
 
@@ -12,9 +12,9 @@
 
 ## What is pkgmap?
 
-`pkgmap` scans all package managers installed on your local machine and displays everything in a single, clean terminal table — with manager info, version, and a short description of each package.
+`pkgmap` scans package managers installed on your machine and displays everything in one clean terminal table, including manager, version, and package type.
 
-No more switching between `npm list -g`, `brew list`, `pip list`, and so on. One command, full picture.
+No more jumping between `npm list -g`, `brew list`, `pip list`, `flatpak list`, or distro-specific package commands. One command, one inventory view.
 
 ---
 
@@ -30,8 +30,16 @@ No more switching between `npm list -g`, `brew list`, `pip list`, and so on. One
 | 🐍 | pip | `pip3 list --format=json` | ✅ | ✅ | ✅ |
 | 🦀 | cargo | `cargo install --list` | ✅ | ✅ | ✅ |
 | 💎 | gem | `gem list` | ✅ | ✅ | ❌ |
+| 🎼 | composer | `composer global show --format=json` | ✅ | ✅ | ✅ |
+| 🐘 | gradle | scan `~/.gradle/caches/modules-2/files-2.1` | ✅ | ✅ | ✅ |
+| ☕ | maven | scan `~/.m2/repository` | ✅ | ✅ | ✅ |
+| 🔷 | nuget | scan global packages via `dotnet nuget locals global-packages --list` | ✅ | ✅ | ✅ |
+| 🐧 | apt | `dpkg-query -W -f="${Package}\t${Version}\n"` | ❌ | ✅ | ❌ |
+| 🧊 | flatpak | `flatpak list --app --columns=application,version` | ✅ | ✅ | ❌ |
+| 📦 | snap | `snap list` | ❌ | ✅ | ❌ |
+| 🛠 | yum | `yum list installed -q` | ❌ | ✅ | ❌ |
 
-Only managers that are **installed and have packages** will appear in the output.
+Only managers that are installed and return packages will appear in the output.
 
 ---
 
@@ -39,11 +47,11 @@ Only managers that are **installed and have packages** will appear in the output
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v0.1.0               ║
+  ║  📦 pkgmap  v0.3.0               ║
   ╚═══════════════════════════════════╝
 
-  📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  💎 gem: 48
-  Total: 119 packages across 4 manager(s)
+  📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  🐧 apt: 1812
+  Total: 1883 packages across 4 manager(s)
 
 ┌──────────┬────────────────────────────┬──────────────┬──────────┐
 │ Manager  │ Package                    │ Version      │ Type     │
@@ -52,7 +60,7 @@ Only managers that are **installed and have packages** will appear in the output
 ├──────────┼────────────────────────────┼──────────────┼──────────┤
 │ 🍺 brew  │ git                        │ 2.44.0       │ formula  │
 ├──────────┼────────────────────────────┼──────────────┼──────────┤
-│ 🍺 brew  │ docker                     │ 29.2.1       │ cask     │
+│ 🐧 apt   │ curl                       │ 8.5.0        │ system   │
 └──────────┴────────────────────────────┴──────────────┴──────────┘
 ```
 
@@ -60,18 +68,25 @@ Only managers that are **installed and have packages** will appear in the output
 
 ## Prerequisites
 
-- **Node.js >= 18** — required for ESM support. Check with `node --version`.
-- **npm** — comes bundled with Node.js.
+- **Node.js >= 18** for ESM support
+- **npm** bundled with Node.js
 
-> If you don't have Node.js, install it from [nodejs.org](https://nodejs.org) or via a version manager like [nvm](https://github.com/nvm-sh/nvm).
+> If Node.js is not installed yet, get it from [nodejs.org](https://nodejs.org) or use a version manager like [nvm](https://github.com/nvm-sh/nvm).
 
 ---
 
 ## Install
 
-> **Note:** pkgmap is published to npm as `@mulham28/pkgmap`. You can install it directly or use the manual install below.
+### Via npm
 
-### Manual install (recommended for now)
+```bash
+npm install -g @mulham28/pkgmap
+pnpm add -g @mulham28/pkgmap
+yarn global add @mulham28/pkgmap
+volta install @mulham28/pkgmap
+```
+
+### Manual install
 
 ```bash
 git clone https://github.com/mulhamna/pkgmap.git
@@ -82,18 +97,9 @@ npm link
 pkgmap
 ```
 
-> **Tip (macOS/Linux):** If `npm link` fails with a permission error, either use `sudo npm link`, or better yet, use [nvm](https://github.com/nvm-sh/nvm) to manage Node.js without needing sudo.
-
-> **Tip (Windows):** Run your terminal (PowerShell or CMD) as **Administrator** before running `npm link`.
-
-### Via npm
-
-```bash
-npm install -g @mulham28/pkgmap
-pnpm add -g @mulham28/pkgmap
-yarn global add @mulham28/pkgmap
-volta install @mulham28/pkgmap
-```
+> Tip for macOS/Linux: if `npm link` fails with a permission error, use `nvm` or fix your npm global prefix instead of relying on sudo.
+>
+> Tip for Windows: run PowerShell or CMD as Administrator before `npm link`.
 
 ---
 
@@ -105,7 +111,7 @@ pkgmap
 
 # Scan only one manager
 pkgmap --manager brew
-pkgmap --manager npm
+pkgmap --manager apt
 
 # Search for a specific package across all managers
 pkgmap --search node
@@ -113,32 +119,10 @@ pkgmap --search git
 
 # Export results to JSON
 pkgmap --export
-# → creates pkgmap-export.json
+# creates pkgmap-export.json
 ```
 
 ---
-
-
-### Search example
-
-```bash
-pkgmap --search git
-```
-
-Example output:
-
-```text
-Package found: git
-  Manager: brew
-  Version: 2.44.0
-  Type: formula
-```
-
-### Troubleshooting
-
-- If `npm link` or global installs fail, check your Node.js / npm PATH.
-- Permission errors usually mean the global npm prefix needs adjustment or a version manager like `nvm`.
-- If a package manager is missing, `pkgmap` will skip it silently.
 
 ## Flags
 
@@ -154,47 +138,46 @@ Package found: git
 
 ## Edge Cases Handled
 
-- **Manager not installed** → silently skipped, won't appear in output
-- **Manager installed but no global packages** → also skipped (no empty tables)
-- **Permission errors** → shows `⚠ <manager>: permission denied. Try running with sudo.`
-- **Slow scanners** → timeout per scanner (10s on macOS/Linux, 30s on Windows), skipped with a warning if exceeded
-- **Duplicate packages** (same package in multiple managers) → shown in both, highlighted in yellow with a `↔ <other manager>` badge
-- **Windows** → brew and gem are skipped automatically; `where` used instead of `which`; longer timeouts applied for slower file system operations
+- Manager not installed, silently skipped
+- Manager installed but no packages, also skipped
+- Permission issues, warning shown and scan continues
+- Slow scanners, timeout and skip with a warning
+- Duplicate packages across managers, highlighted with cross-manager hints
+- Windows compatibility, unsupported managers auto-skipped and longer npm timeout applied
 
 ---
 
 ## Adding a New Scanner
 
 1. Create `src/scanners/<name>.js`
-2. Follow the standard interface:
+2. Return this shape:
 
 ```js
 export default async function scan() {
   return {
     manager: 'mymanager',
     packages: [
-      { name: 'some-package', version: '1.0.0', description: 'Does something cool' }
+      { name: 'some-package', version: '1.0.0', type: 'library' }
     ]
   }
 }
 ```
 
 3. Register it in `src/index.js`
-4. Add its icon to `src/display/table.js` → `MANAGER_ICONS`
+4. Add an icon in `src/display/table.js`
 
 ---
 
 ## Tech Stack
 
 - **Runtime:** Node.js (ESM)
-- `commander` — CLI flags
-- `chalk` — terminal colors
-- `cli-table3` — table rendering
-- `ora` — spinner while scanning
+- `commander` for CLI flags
+- `chalk` for terminal colors
+- `cli-table3` for table rendering
+- `ora` for the scanning spinner
 
 ---
 
 ## License
 
-MIT — see [LICENSE](./LICENSE) for details.
-
+MIT, see [LICENSE](./LICENSE).
