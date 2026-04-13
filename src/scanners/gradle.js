@@ -21,7 +21,9 @@ export default async function scan() {
 
     for (const groupDir of groupDirs) {
       const groupPath = join(root, groupDir.name)
-      const artifactDirs = readdirSync(groupPath, { withFileTypes: true }).filter((d) => d.isDirectory())
+      const artifactDirs = readdirSync(groupPath, { withFileTypes: true }).filter((d) =>
+        d.isDirectory()
+      )
 
       for (const artifactDir of artifactDirs) {
         const artifactPath = join(groupPath, artifactDir.name)
