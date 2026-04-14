@@ -9,7 +9,6 @@ function getGradleCacheRoot() {
 }
 
 export default async function scan() {
-  // Keep an availability check so we only report Gradle when it is actually installed.
   if (!isAvailable('gradle')) return null
 
   const root = getGradleCacheRoot()

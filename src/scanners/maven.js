@@ -35,7 +35,6 @@ function walkMavenRepo(root, relativeParts = [], collector = []) {
 }
 
 export default async function scan() {
-  // Keep an availability check so we only report Maven when it is actually installed.
   if (!isAvailable('mvn')) return null
 
   const root = getMavenRepoRoot()
