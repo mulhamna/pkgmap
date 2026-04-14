@@ -1,6 +1,6 @@
 {
   "name": "@mulham28/pkgmap",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "description": "One command to see everything installed on your machine",
   "keywords": [

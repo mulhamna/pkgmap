@@ -9,7 +9,6 @@ function getGradleCacheRoot() {
 }
 
 export default async function scan() {
-  // Keep an availability check so we only report Gradle when it is actually installed.
   if (!isAvailable('gradle')) return null
 
   const root = getGradleCacheRoot()
@@ -24,7 +23,6 @@ export default async function scan() {
       const artifactDirs = readdirSync(groupPath, { withFileTypes: true }).filter((d) =>
         d.isDirectory()
       )
-      const artifactDirs = readdirSync(groupPath, { withFileTypes: true }).filter((d) => d.isDirectory())
 
       for (const artifactDir of artifactDirs) {
         const artifactPath = join(groupPath, artifactDir.name)
@@ -49,5 +47,4 @@ export default async function scan() {
     }
     return null
   }
-}
 }

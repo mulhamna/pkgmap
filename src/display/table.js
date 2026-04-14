@@ -1,5 +1,6 @@
 import Table from 'cli-table3'
 import chalk from 'chalk'
+import { APP_VERSION } from '../version.js'
 
 export const MANAGER_ICONS = {
   npm: '📦',
@@ -24,7 +25,7 @@ export function renderBanner() {
   console.log(
     chalk.cyan('  ║') +
       chalk.bold('  📦 pkgmap  ') +
-      chalk.dim('v0.3.0') +
+      chalk.dim(`v${APP_VERSION}`) +
       chalk.cyan('               ║')
   )
   console.log(chalk.cyan('  ╚═══════════════════════════════════╝'))
