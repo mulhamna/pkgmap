@@ -4,7 +4,7 @@
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v0.3.0               ║
+  ║  📦 pkgmap  v0.3.2               ║
   ╚═══════════════════════════════════╝
 ```
 
@@ -47,7 +47,7 @@ Only managers that are installed and return packages will appear in the output.
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v0.3.0               ║
+  ║  📦 pkgmap  v0.3.2               ║
   ╚═══════════════════════════════════╝
 
   📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  🐧 apt: 1812
@@ -68,7 +68,7 @@ Only managers that are installed and return packages will appear in the output.
 
 ## Prerequisites
 
-- **Node.js >= 18** for ESM support
+- **Node.js >= 24** for the supported runtime baseline
 - **npm** bundled with Node.js
 
 > If Node.js is not installed yet, get it from [nodejs.org](https://nodejs.org) or use a version manager like [nvm](https://github.com/nvm-sh/nvm).
