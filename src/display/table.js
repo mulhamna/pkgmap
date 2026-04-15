@@ -24,6 +24,7 @@ export const MANAGER_ICONS = {
   scoop: '🥤',
   nix: '❄️',
   uv: '🧪',
+  bun: '🥟',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',
