@@ -22,6 +22,7 @@ import snapScanner from './scanners/snap.js'
 import yumScanner from './scanners/yum.js'
 import wingetScanner from './scanners/winget.js'
 import chocoScanner from './scanners/choco.js'
+import scoopScanner from './scanners/scoop.js'
 import apkScanner from './scanners/apk.js'
 import zypperScanner from './scanners/zypper.js'
 import pkgScanner from './scanners/pkg.js'
@@ -48,6 +49,7 @@ const ALL_SCANNERS = {
   yum: yumScanner,
   winget: wingetScanner,
   choco: chocoScanner,
+  scoop: scoopScanner,
   apk: apkScanner,
   zypper: zypperScanner,
   pkg: pkgScanner,

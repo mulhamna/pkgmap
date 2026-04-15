@@ -21,6 +21,7 @@ export const MANAGER_ICONS = {
   yum: '🛠',
   winget: '🪽',
   choco: '🍫',
+  scoop: '🥤',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',
