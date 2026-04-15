@@ -1,8 +1,12 @@
 # Changelog
 
-## Unreleased
-- Add scanners for pacman (Arch Linux), dnf (Fedora/RHEL), apk (Alpine), zypper (openSUSE), and pkg (FreeBSD)
-- Add fallback dnf parsing when repoquery is unavailable
+## [0.4.0] - 2026-04-15
+### Added
+- New scanners for pacman (Arch Linux), dnf (Fedora/RHEL), apk (Alpine), zypper (openSUSE), and pkg (FreeBSD)
+
+### Changed
+- dnf scanner now falls back cleanly when repoquery is unavailable
+- Release metadata and documentation synced to 0.4.0
 
 ## [0.3.2] - 2026-04-15
 ### Fixed
