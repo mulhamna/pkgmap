@@ -19,6 +19,16 @@ export const MANAGER_ICONS = {
   pacman: '🏹',
   dnf: '🎩',
   yum: '🛠',
+  winget: '🪽',
+  choco: '🍫',
+  scoop: '🥤',
+  nix: '❄️',
+  uv: '🧪',
+  bun: '🥟',
+  pipx: '📦',
+  poetry: '🪶',
+  helm: '⎈',
+  krew: '🔌',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',
@@ -65,6 +75,7 @@ const TYPE_COLORS = {
   java: (s) => chalk.yellow(s),
   dotnet: (s) => chalk.cyan(s),
   system: (s) => chalk.white(s),
+  plugin: (s) => chalk.magentaBright(s),
 }
 
 function colorType(type) {

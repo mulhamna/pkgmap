@@ -4,7 +4,7 @@
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v0.4.0               ║
+  ║  📦 pkgmap  v1.0.0               ║
   ╚═══════════════════════════════════╝
 ```
 
@@ -40,6 +40,16 @@ No more jumping between `npm list -g`, `brew list`, `pip list`, `flatpak list`, 
 | 🧊 | flatpak | `flatpak list --app --columns=application,version` | ✅ | ✅ | ❌ |
 | 📦 | snap | `snap list` | ❌ | ✅ | ❌ |
 | 🛠 | yum | `yum list installed -q` | ❌ | ✅ | ❌ |
+| 🪽 | winget | `winget list --accept-source-agreements` | ❌ | ❌ | ✅ |
+| 🍫 | choco | `choco list --local-only --limit-output` | ❌ | ❌ | ✅ |
+| 🥤 | scoop | `scoop export` | ❌ | ❌ | ✅ |
+| ❄️ | nix | `nix-env -q --installed --json` | ✅ | ✅ | ✅ |
+| 🧪 | uv | `uv tool list` | ✅ | ✅ | ✅ |
+| 🥟 | bun | `bun pm ls --global --json` | ✅ | ✅ | ✅ |
+| 📦 | pipx | `pipx list --json` | ✅ | ✅ | ✅ |
+| 🪶 | poetry | `poetry self show plugins --no-ansi` | ✅ | ✅ | ✅ |
+| ⎈ | helm | `helm plugin list` | ✅ | ✅ | ✅ |
+| 🔌 | krew | `kubectl krew list` | ✅ | ✅ | ✅ |
 | 🏔 | apk | `apk info -v` | ❌ | ✅ | ❌ |
 | 🦎 | zypper | `zypper search --installed-only --details --type package` | ❌ | ✅ | ❌ |
 | 🐡 | pkg | `pkg info` | ❌ | ❌ | ✅ |
@@ -52,7 +62,7 @@ Only managers that are installed and return packages will appear in the output.
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v0.4.0               ║
+  ║  📦 pkgmap  v1.0.0               ║
   ╚═══════════════════════════════════╝
 
   📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  🐧 apt: 1812  ·  🏹 pacman: 512
@@ -149,7 +159,7 @@ pkgmap --export
 - Slow scanners, timeout and skip with a warning
 - Duplicate packages across managers, highlighted with cross-manager hints
 - Windows compatibility, unsupported managers auto-skipped and longer npm timeout applied
-- Arch Linux, Fedora/RHEL, Alpine, openSUSE, and FreeBSD package inventories supported via pacman, dnf, apk, zypper, and pkg
+- Arch Linux, Fedora/RHEL, Alpine, openSUSE, FreeBSD, Windows, Nix, Python tooling, Bun, and Kubernetes plugin ecosystems are now covered
 
 ---
 
