@@ -15,9 +15,14 @@ import gradleScanner from './scanners/gradle.js'
 import mavenScanner from './scanners/maven.js'
 import nugetScanner from './scanners/nuget.js'
 import aptScanner from './scanners/apt.js'
+import pacmanScanner from './scanners/pacman.js'
+import dnfScanner from './scanners/dnf.js'
 import flatpakScanner from './scanners/flatpak.js'
 import snapScanner from './scanners/snap.js'
 import yumScanner from './scanners/yum.js'
+import apkScanner from './scanners/apk.js'
+import zypperScanner from './scanners/zypper.js'
+import pkgScanner from './scanners/pkg.js'
 import { renderAll } from './display/table.js'
 
 const ALL_SCANNERS = {
@@ -34,9 +39,14 @@ const ALL_SCANNERS = {
   maven: mavenScanner,
   nuget: nugetScanner,
   apt: aptScanner,
+  pacman: pacmanScanner,
+  dnf: dnfScanner,
   flatpak: flatpakScanner,
   snap: snapScanner,
   yum: yumScanner,
+  apk: apkScanner,
+  zypper: zypperScanner,
+  pkg: pkgScanner,
 }
 
 export async function run(options) {

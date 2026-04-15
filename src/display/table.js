@@ -16,7 +16,12 @@ export const MANAGER_ICONS = {
   maven: '☕',
   nuget: '🔷',
   apt: '🐧',
+  pacman: '🏹',
+  dnf: '🎩',
   yum: '🛠',
+  apk: '🏔',
+  zypper: '🦎',
+  pkg: '🐡',
 }
 
 export function renderBanner() {
