@@ -23,6 +23,7 @@ export const MANAGER_ICONS = {
   choco: '🍫',
   scoop: '🥤',
   nix: '❄️',
+  uv: '🧪',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',

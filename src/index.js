@@ -24,6 +24,7 @@ import wingetScanner from './scanners/winget.js'
 import chocoScanner from './scanners/choco.js'
 import scoopScanner from './scanners/scoop.js'
 import nixScanner from './scanners/nix.js'
+import uvScanner from './scanners/uv.js'
 import apkScanner from './scanners/apk.js'
 import zypperScanner from './scanners/zypper.js'
 import pkgScanner from './scanners/pkg.js'
@@ -52,6 +53,7 @@ const ALL_SCANNERS = {
   choco: chocoScanner,
   scoop: scoopScanner,
   nix: nixScanner,
+  uv: uvScanner,
   apk: apkScanner,
   zypper: zypperScanner,
   pkg: pkgScanner,
