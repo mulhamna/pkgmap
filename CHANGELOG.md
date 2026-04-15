@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+- Add scanners for pacman (Arch Linux), dnf (Fedora/RHEL), apk (Alpine), zypper (openSUSE), and pkg (FreeBSD)
+- Add fallback dnf parsing when repoquery is unavailable
+
 ## [0.3.2] - 2026-04-15
 ### Fixed
 - Cargo scanner parsing hardened for more resilient `cargo install --list` handling

@@ -35,9 +35,14 @@ No more jumping between `npm list -g`, `brew list`, `pip list`, `flatpak list`, 
 | ☕ | maven | scan `~/.m2/repository` | ✅ | ✅ | ✅ |
 | 🔷 | nuget | scan global packages via `dotnet nuget locals global-packages --list` | ✅ | ✅ | ✅ |
 | 🐧 | apt | `dpkg-query -W -f="${Package}\t${Version}\n"` | ❌ | ✅ | ❌ |
+| 🏹 | pacman | `pacman -Q` | ❌ | ✅ | ❌ |
+| 🎩 | dnf | `dnf repoquery --installed --qf "%{name}\t%{version}-%{release}"` | ❌ | ✅ | ❌ |
 | 🧊 | flatpak | `flatpak list --app --columns=application,version` | ✅ | ✅ | ❌ |
 | 📦 | snap | `snap list` | ❌ | ✅ | ❌ |
 | 🛠 | yum | `yum list installed -q` | ❌ | ✅ | ❌ |
+| 🏔 | apk | `apk info -v` | ❌ | ✅ | ❌ |
+| 🦎 | zypper | `zypper search --installed-only --details --type package` | ❌ | ✅ | ❌ |
+| 🐡 | pkg | `pkg info` | ❌ | ❌ | ✅ |
 
 Only managers that are installed and return packages will appear in the output.
 
@@ -50,8 +55,8 @@ Only managers that are installed and return packages will appear in the output.
   ║  📦 pkgmap  v0.3.2               ║
   ╚═══════════════════════════════════╝
 
-  📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  🐧 apt: 1812
-  Total: 1883 packages across 4 manager(s)
+  📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  🐧 apt: 1812  ·  🏹 pacman: 512
+  Total: 2395 packages across 5 manager(s)
 
 ┌──────────┬────────────────────────────┬──────────────┬──────────┐
 │ Manager  │ Package                    │ Version      │ Type     │
@@ -144,6 +149,7 @@ pkgmap --export
 - Slow scanners, timeout and skip with a warning
 - Duplicate packages across managers, highlighted with cross-manager hints
 - Windows compatibility, unsupported managers auto-skipped and longer npm timeout applied
+- Arch Linux, Fedora/RHEL, Alpine, openSUSE, and FreeBSD package inventories supported via pacman, dnf, apk, zypper, and pkg
 
 ---
 
