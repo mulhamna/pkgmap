@@ -3,7 +3,10 @@ import { isAvailable } from '../utils.js'
 
 function parseCargoInstallList(raw) {
   const packages = []
-  const lines = raw.split('\n').map((line) => line.trim()).filter(Boolean)
+  const lines = raw
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
 
   for (const line of lines) {
     const match = line.match(/^([^\s]+)\s+v?([^\s:]+):/)
@@ -39,7 +42,11 @@ export default async function scan() {
     const stderr = err.stderr?.toString?.() || ''
     const message = err.message || ''
 
-    if (message.includes('EACCES') || message.includes('permission') || stderr.includes('permission denied')) {
+    if (
+      message.includes('EACCES') ||
+      message.includes('permission') ||
+      stderr.includes('permission denied')
+    ) {
       console.warn('⚠ cargo: permission denied. Check Rustup/Cargo permissions.')
     } else if (err.signal === 'SIGTERM' || err.code === 'ETIMEDOUT') {
       console.warn('⚠ cargo: scan timed out, skipping.')
