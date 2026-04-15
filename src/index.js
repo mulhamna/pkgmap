@@ -28,6 +28,8 @@ import uvScanner from './scanners/uv.js'
 import bunScanner from './scanners/bun.js'
 import pipxScanner from './scanners/pipx.js'
 import poetryScanner from './scanners/poetry.js'
+import helmScanner from './scanners/helm.js'
+import krewScanner from './scanners/krew.js'
 import apkScanner from './scanners/apk.js'
 import zypperScanner from './scanners/zypper.js'
 import pkgScanner from './scanners/pkg.js'
@@ -60,6 +62,8 @@ const ALL_SCANNERS = {
   bun: bunScanner,
   pipx: pipxScanner,
   poetry: poetryScanner,
+  helm: helmScanner,
+  krew: krewScanner,
   apk: apkScanner,
   zypper: zypperScanner,
   pkg: pkgScanner,

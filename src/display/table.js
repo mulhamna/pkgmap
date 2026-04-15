@@ -27,6 +27,8 @@ export const MANAGER_ICONS = {
   bun: '🥟',
   pipx: '📦',
   poetry: '🪶',
+  helm: '⎈',
+  krew: '🔌',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',
