@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0] - 2026-04-15
+### Added
+- New scanners for winget, Chocolatey, Scoop, Nix, uv, Bun, pipx, Poetry, Helm, and Krew
+
+### Changed
+- Project version promoted to 1.0.0 after broad cross-platform package manager coverage
+
 ## [0.4.0] - 2026-04-15
 ### Added
 - New scanners for pacman (Arch Linux), dnf (Fedora/RHEL), apk (Alpine), zypper (openSUSE), and pkg (FreeBSD)
