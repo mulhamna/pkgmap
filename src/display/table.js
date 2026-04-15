@@ -19,6 +19,7 @@ export const MANAGER_ICONS = {
   pacman: '🏹',
   dnf: '🎩',
   yum: '🛠',
+  winget: '🪽',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',

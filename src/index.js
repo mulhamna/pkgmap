@@ -20,6 +20,7 @@ import dnfScanner from './scanners/dnf.js'
 import flatpakScanner from './scanners/flatpak.js'
 import snapScanner from './scanners/snap.js'
 import yumScanner from './scanners/yum.js'
+import wingetScanner from './scanners/winget.js'
 import apkScanner from './scanners/apk.js'
 import zypperScanner from './scanners/zypper.js'
 import pkgScanner from './scanners/pkg.js'
@@ -44,6 +45,7 @@ const ALL_SCANNERS = {
   flatpak: flatpakScanner,
   snap: snapScanner,
   yum: yumScanner,
+  winget: wingetScanner,
   apk: apkScanner,
   zypper: zypperScanner,
   pkg: pkgScanner,
