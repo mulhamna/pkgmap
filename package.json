@@ -1,6 +1,6 @@
 {
   "name": "@mulham28/pkgmap",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "description": "One command to see everything installed on your machine",
   "keywords": [
@@ -27,7 +27,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24.0.0"
   },
   "bin": {
     "pkgmap": "bin/pkgmap.js"

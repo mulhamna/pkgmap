@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.2] - 2026-04-15
+### Fixed
+- Cargo scanner parsing hardened for more resilient `cargo install --list` handling
+- Cargo scan failures now surface clearer skip reasons instead of failing silently
+
+### Changed
+- Release metadata and documentation synced to 0.3.2
+
+---
+
 ## [0.3.0] - 2026-04-14
 ### Added
 - New scanners: composer, gradle, maven, nuget, apt, and yum
