@@ -25,6 +25,8 @@ export const MANAGER_ICONS = {
   nix: '❄️',
   uv: '🧪',
   bun: '🥟',
+  pipx: '📦',
+  poetry: '🪶',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',
@@ -71,6 +73,7 @@ const TYPE_COLORS = {
   java: (s) => chalk.yellow(s),
   dotnet: (s) => chalk.cyan(s),
   system: (s) => chalk.white(s),
+  plugin: (s) => chalk.magentaBright(s),
 }
 
 function colorType(type) {
