@@ -20,6 +20,7 @@ export const MANAGER_ICONS = {
   dnf: '🎩',
   yum: '🛠',
   winget: '🪽',
+  choco: '🍫',
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',
