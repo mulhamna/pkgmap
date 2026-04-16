@@ -55,7 +55,7 @@ pkgmap/
 ```json
 {
   "name": "@mulham28/pkgmap",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "description": "One command to see everything installed on your machine",
   "engines": {
@@ -262,14 +262,6 @@ npm login
 npm publish --access public
 ```
 
-### Release and versioning rules
-- Version source of truth is `package.json`
-- Keep `src/version.js` in sync with `package.json`
-- Keep `package-lock.json` root version in sync with `package.json`
-- Run `npm run release:check` before publish-sensitive changes
-- CI enforces version sync to catch drift early
-- Release PR flow owns version bumps and changelog preparation
-
 Setelah publish ke npm, otomatis bisa diinstall via:
 - `npm install -g @mulham28/pkgmap`
 - `pnpm add -g @mulham28/pkgmap`
@@ -289,10 +281,6 @@ Nanti perlu bikin repo `homebrew-pkgmap` dan Formula `.rb`.
 
 ```md
 # Changelog
-
-## [1.1.0] - current baseline
-### Added
-- Cross-platform package manager coverage expanded through v1.1.0
 - Release PR flow prepares version bumps and changelog updates
 - CI now validates version sync before release-sensitive runs
 ```
