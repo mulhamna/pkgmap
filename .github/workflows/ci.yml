@@ -4,18 +4,28 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  lint-and-format:
-    name: Lint & Format Check
+  lint-and-smoke:
+    name: Lint, Format, and Smoke Check
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@42375524e23c412d93f7b1ac14db8eea7ca3f10a
         with:
           node-version: 20
           cache: npm
@@ -28,3 +38,6 @@ jobs:
 
       - name: Run Prettier check
         run: npm run format:check
+
+      - name: Smoke test CLI help
+        run: node bin/pkgmap.js --help
