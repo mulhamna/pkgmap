@@ -40,6 +40,9 @@ jobs:
       - name: Run Prettier check
         run: npm run format:check
 
+      - name: Verify version sync
+        run: npm run release:check
+
       - name: Smoke test CLI help
         run: node bin/pkgmap.js --help
 
