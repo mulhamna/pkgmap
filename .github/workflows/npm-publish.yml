@@ -1,23 +1,29 @@
 name: Publish to npm
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ github.workflow }}-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
 
 jobs:
   publish:
-    name: Publish package when version changes
+    name: Publish package from GitHub release
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+    if: github.event.release.target_commitish == 'main'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@42375524e23c412d93f7b1ac14db8eea7ca3f10a
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -31,37 +37,24 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      - name: Check package version against npm
-        id: version_check
+      - name: Run Prettier check
+        run: npm run format:check
+
+      - name: Smoke test CLI help
+        run: node bin/pkgmap.js --help
+
+      - name: Verify release tag matches package version
         shell: bash
         run: |
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
-          LOCAL_VERSION=$(node -p "require('./package.json').version")
-          REMOTE_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || true)
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          TAG_NAME="${GITHUB_REF_NAME#v}"
 
-          echo "package_name=$PACKAGE_NAME" >> "$GITHUB_OUTPUT"
-          echo "local_version=$LOCAL_VERSION" >> "$GITHUB_OUTPUT"
-          echo "remote_version=$REMOTE_VERSION" >> "$GITHUB_OUTPUT"
-
-          if [ "$LOCAL_VERSION" = "$REMOTE_VERSION" ]; then
-            echo "should_publish=false" >> "$GITHUB_OUTPUT"
-            echo "Version $LOCAL_VERSION already exists on npm, skipping publish."
-          else
-            echo "should_publish=true" >> "$GITHUB_OUTPUT"
-            echo "New version detected: local=$LOCAL_VERSION remote=${REMOTE_VERSION:-none}"
+          if [ "$PACKAGE_VERSION" != "$TAG_NAME" ]; then
+            echo "Release tag v$TAG_NAME does not match package version $PACKAGE_VERSION"
+            exit 1
           fi
 
       - name: Publish to npm
-        if: steps.version_check.outputs.should_publish == 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish summary
-        shell: bash
-        run: |
-          if [ "${{ steps.version_check.outputs.should_publish }}" = "true" ]; then
-            echo "Published ${{ steps.version_check.outputs.package_name }}@${{ steps.version_check.outputs.local_version }} to npm."
-          else
-            echo "Skipped publish for ${{ steps.version_check.outputs.package_name }} because version ${{ steps.version_check.outputs.local_version }} is already on npm."
-          fi

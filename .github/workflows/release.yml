@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Prepare release PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Release Please
+        uses: googleapis/release-please-action@fa5d08c962fd67ecd3c49dd783d67143c02b75bb
+        with:
+          release-type: node
+          package-name: @mulham28/pkgmap
+          token: ${{ secrets.GITHUB_TOKEN }}
