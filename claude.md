@@ -55,7 +55,7 @@ pkgmap/
 ```json
 {
   "name": "@mulham28/pkgmap",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "One command to see everything installed on your machine",
   "engines": {
@@ -290,9 +290,9 @@ Nanti perlu bikin repo `homebrew-pkgmap` dan Formula `.rb`.
 ```md
 # Changelog
 
-## [1.0.0] - current baseline
+## [1.1.0] - current baseline
 ### Added
-- Cross-platform package manager coverage expanded through v1.0.0
+- Cross-platform package manager coverage expanded through v1.1.0
 - Release PR flow prepares version bumps and changelog updates
 - CI now validates version sync before release-sensitive runs
 ```
