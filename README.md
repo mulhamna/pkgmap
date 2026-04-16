@@ -83,7 +83,7 @@ Only managers that are installed and return packages will appear in the output.
 
 ## Prerequisites
 
-- **Node.js >= 24** for the supported runtime baseline
+- **Node.js >= 20** for the supported runtime baseline
 - **npm** bundled with Node.js
 
 > If Node.js is not installed yet, get it from [nodejs.org](https://nodejs.org) or use a version manager like [nvm](https://github.com/nvm-sh/nvm).

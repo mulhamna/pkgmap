@@ -59,7 +59,7 @@ pkgmap/
   "type": "module",
   "description": "One command to see everything installed on your machine",
   "engines": {
-    "node": ">=24.0.0"
+    "node": ">=20.0.0"
   },
   "bin": {
     "pkgmap": "bin/pkgmap.js"
