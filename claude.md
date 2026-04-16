@@ -50,30 +50,26 @@ pkgmap/
 
 ---
 
-## Package.json (bootstrap)
+## Package.json (current shape)
 
 ```json
 {
-  "name": "pkgmap",
-  "version": "0.1.0",
+  "name": "@mulham28/pkgmap",
+  "version": "1.0.0",
   "type": "module",
   "description": "One command to see everything installed on your machine",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "bin": {
-    "pkgmap": "./bin/pkgmap.js"
+    "pkgmap": "bin/pkgmap.js"
   },
   "scripts": {
     "lint": "eslint src/",
-    "format": "prettier --write src/"
-  },
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "cli-table3": "^0.6.3",
-    "commander": "^12.0.0",
-    "ora": "^8.0.1"
-  },
-  "devDependencies": {
-    "eslint": "^9.0.0",
-    "prettier": "^3.0.0"
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "release:check": "node scripts/sync-version-check.mjs",
+    "start": "node bin/pkgmap.js"
   }
 }
 ```
@@ -221,11 +217,12 @@ const results = await Promise.allSettled(scanners.map(s => s()))
 #!/usr/bin/env node
 import { program } from 'commander'
 import { run } from '../src/index.js'
+import { APP_VERSION } from '../src/version.js'
 
 program
   .name('pkgmap')
   .description('See everything installed on your machine')
-  .version('0.1.0')
+  .version(APP_VERSION)
   .option('-m, --manager <name>', 'scan only a specific package manager')
   .option('-s, --search <package>', 'search for a specific package')
   .option('-e, --export', 'export results to pkgmap-export.json')
@@ -265,11 +262,19 @@ npm login
 npm publish --access public
 ```
 
+### Release and versioning rules
+- Version source of truth is `package.json`
+- Keep `src/version.js` in sync with `package.json`
+- Keep `package-lock.json` root version in sync with `package.json`
+- Run `npm run release:check` before publish-sensitive changes
+- CI enforces version sync to catch drift early
+- Release PR flow owns version bumps and changelog preparation
+
 Setelah publish ke npm, otomatis bisa diinstall via:
-- `npm install -g pkgmap`
-- `pnpm add -g pkgmap`
-- `yarn global add pkgmap`
-- `volta install pkgmap`
+- `npm install -g @mulham28/pkgmap`
+- `pnpm add -g @mulham28/pkgmap`
+- `yarn global add @mulham28/pkgmap`
+- `volta install @mulham28/pkgmap`
 
 ---
 
@@ -285,11 +290,11 @@ Nanti perlu bikin repo `homebrew-pkgmap` dan Formula `.rb`.
 ```md
 # Changelog
 
-## [0.1.0] - TBD
+## [1.0.0] - current baseline
 ### Added
-- Initial release
-- Support: npm, pnpm, yarn, brew, volta, pip, cargo, gem
-- Flags: --manager, --search, --export
+- Cross-platform package manager coverage expanded through v1.0.0
+- Release PR flow prepares version bumps and changelog updates
+- CI now validates version sync before release-sensitive runs
 ```
 
 ---
