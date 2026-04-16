@@ -1,15 +1,15 @@
 name: Publish to npm
 
 on:
-  release:
-    types:
-      - released
+  push:
+    tags:
+      - 'pkgmap-v*'
 
 permissions:
   contents: read
 
 concurrency:
-  group: publish-${{ github.workflow }}-${{ github.event.release.tag_name }}
+  group: publish-${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
-          ref: ${{ github.event.release.target_commitish }}
+          ref: ${{ github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -51,7 +51,7 @@ jobs:
         shell: bash
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          TAG_NAME="${{ github.event.release.tag_name }}"
+          TAG_NAME="${{ github.ref_name }}"
           TAG_VERSION="${TAG_NAME#pkgmap-v}"
 
           if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
