@@ -4,7 +4,7 @@
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v1.0.0               ║
+  ║  📦 pkgmap  v1.1.0               ║
   ╚═══════════════════════════════════╝
 ```
 
@@ -62,7 +62,7 @@ Only managers that are installed and return packages will appear in the output.
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v1.0.0               ║
+  ║  📦 pkgmap  v1.1.0               ║
   ╚═══════════════════════════════════╝
 
   📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  🐧 apt: 1812  ·  🏹 pacman: 512
@@ -181,7 +181,7 @@ export default async function scan() {
   return {
     manager: 'mymanager',
     packages: [
-      { name: 'some-package', version: '1.0.0', type: 'library' }
+      { name: 'some-package', version: '1.1.0', type: 'library' }
     ]
   }
 }
