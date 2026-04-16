@@ -37,9 +37,7 @@ export function renderBanner() {
   console.log()
   console.log(chalk.cyan('  ╔═══════════════════════════════════╗'))
   console.log(
-    chalk.cyan('  ║') +
-      chalk.bold('  📦 pkgmap') +
-      chalk.cyan('                        ║')
+    chalk.cyan('  ║') + chalk.bold('  📦 pkgmap') + chalk.cyan('                        ║')
   )
   console.log(chalk.cyan('  ╚═══════════════════════════════════╝'))
   console.log()
