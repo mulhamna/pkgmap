@@ -4,7 +4,7 @@
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v1.1.1               ║
+  ║  📦 pkgmap                        ║
   ╚═══════════════════════════════════╝
 ```
 
@@ -62,7 +62,7 @@ Only managers that are installed and return packages will appear in the output.
 
 ```
   ╔═══════════════════════════════════╗
-  ║  📦 pkgmap  v1.1.1               ║
+  ║  📦 pkgmap                        ║
   ╚═══════════════════════════════════╝
 
   📦 npm: 4  ·  🍺 brew: 64  ·  🐍 pip: 3  ·  🐧 apt: 1812  ·  🏹 pacman: 512
