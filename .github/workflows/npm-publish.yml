@@ -45,18 +45,18 @@ jobs:
       - name: Smoke test CLI help
         run: node bin/pkgmap.js --help
 
-      - name: Publish only for release-version commits
+      - name: Publish to npm (skip if already published)
         shell: bash
-        run: |
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          VERSION_IN_SRC=$(node -e "import('./src/version.js').then(m => console.log(m.APP_VERSION))")
-
-          if [ "$PACKAGE_VERSION" != "$VERSION_IN_SRC" ]; then
-            echo "Skipping publish because package.json=$PACKAGE_VERSION and src/version.js=$VERSION_IN_SRC are not synced"
-            exit 1
-          fi
-
-      - name: Publish to npm
-        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view @mulham28/pkgmap@$PACKAGE_VERSION version 2>/dev/null || true)
+
+          if [ "$PUBLISHED" = "$PACKAGE_VERSION" ]; then
+            echo "Version $PACKAGE_VERSION already on npm, skipping publish."
+            exit 0
+          fi
+
+          echo "Publishing version $PACKAGE_VERSION..."
+          npm publish --access public
