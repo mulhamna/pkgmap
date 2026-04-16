@@ -2,14 +2,14 @@ name: Publish to npm
 
 on:
   push:
-    tags:
-      - 'pkgmap-v*'
+    branches:
+      - main
 
 permissions:
   contents: read
 
 concurrency:
-  group: publish-${{ github.workflow }}-${{ github.ref_name }}
+  group: publish-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -20,8 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-        with:
-          ref: ${{ github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
@@ -47,15 +45,14 @@ jobs:
       - name: Smoke test CLI help
         run: node bin/pkgmap.js --help
 
-      - name: Verify release tag matches package version
+      - name: Publish only for release-version commits
         shell: bash
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          TAG_NAME="${{ github.ref_name }}"
-          TAG_VERSION="${TAG_NAME#pkgmap-v}"
+          VERSION_IN_SRC=$(node -e "import('./src/version.js').then(m => console.log(m.APP_VERSION))")
 
-          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
-            echo "Release tag $TAG_NAME does not match package version $PACKAGE_VERSION"
+          if [ "$PACKAGE_VERSION" != "$VERSION_IN_SRC" ]; then
+            echo "Skipping publish because package.json=$PACKAGE_VERSION and src/version.js=$VERSION_IN_SRC are not synced"
             exit 1
           fi
 
