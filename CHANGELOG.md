@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.1.1...pkgmap-v1.1.2) (2026-04-16)
+
+
+### Bug Fixes
+
+* sync runtime version with 1.1.1 release ([d0c2df3](https://github.com/mulhamna/pkgmap/commit/d0c2df3f0e406382b227e3541e2072fa1d382a75))
+
 ## [1.1.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.1.0...pkgmap-v1.1.1) (2026-04-16)
 
 
