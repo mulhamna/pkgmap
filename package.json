@@ -52,6 +52,7 @@
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
     "release:check": "node scripts/sync-version-check.mjs",
+    "version:sync": "node scripts/update-version-artifacts.mjs",
     "start": "node bin/pkgmap.js"
   },
   "dependencies": {
