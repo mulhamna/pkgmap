@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Release Please
-        uses: googleapis/release-please-action@fa5d08c962fd67ecd3c49dd783d67143c02b75bb
+        uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071
         with:
           release-type: node
           package-name: @mulham28/pkgmap
