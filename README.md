@@ -118,6 +118,14 @@ pkgmap
 
 ---
 
+## Release Flow
+
+- Regular pull requests run CI checks before merge.
+- Merges to `main` prepare releases through an automated release PR flow.
+- npm publish is separated from normal pushes and runs from the GitHub release path.
+- Current publish auth still uses `NPM_TOKEN`, with a future path open for trusted publishing.
+- Version-sensitive files are checked in CI so `package.json`, `package-lock.json`, and `src/version.js` do not drift.
+
 ## Usage
 
 ```bash
@@ -193,6 +201,14 @@ export default async function scan() {
 - `ora` for the scanning spinner
 
 ---
+
+## Maintainer Notes
+
+- Version source of truth: `package.json`
+- Keep `src/version.js` aligned with `package.json`
+- Keep the root version inside `package-lock.json` aligned as well
+- Run `npm run release:check` when touching release-sensitive files
+- If release automation updates versioning, review changelog and generated release PR before merge
 
 ## License
 
