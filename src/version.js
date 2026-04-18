@@ -1,1 +1,6 @@
-export const APP_VERSION = '1.2.0'
+import { createRequire } from 'module'
+
+const require = createRequire(import.meta.url)
+const { version } = require('../package.json')
+
+export const APP_VERSION = version
