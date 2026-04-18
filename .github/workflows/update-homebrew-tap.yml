@@ -31,15 +31,18 @@ jobs:
           URL="https://registry.npmjs.org/@mulham28/pkgmap/-/pkgmap-${VERSION}.tgz"
 
           # Retry up to 5x — npm CDN may lag slightly after publish
+          SHA=""
           for i in $(seq 1 5); do
-            SHA=$(curl -fsSL "$URL" | sha256sum | awk '{print $1}')
-            [ -n "$SHA" ] && break
+            if curl -fsSL "$URL" -o /tmp/pkgmap.tgz 2>/dev/null; then
+              SHA=$(sha256sum /tmp/pkgmap.tgz | awk '{print $1}')
+              break
+            fi
             echo "Attempt $i failed, retrying in 15s..."
             sleep 15
           done
 
           if [ -z "$SHA" ]; then
-            echo "Failed to compute sha256 for $URL"
+            echo "Failed to download tarball from $URL"
             exit 1
           fi
 
