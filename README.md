@@ -56,6 +56,7 @@ No more jumping between `npm list -g`, `brew list`, `pip list`, `flatpak list`, 
 | 🐹 | go | `go env GOPATH` + scan `$GOPATH/bin` | ✅ | ✅ | ✅ |
 | 🐍 | conda / mamba | `conda list --json` / `mamba list --json` | ✅ | ✅ | ✅ |
 | 🛠 | mise | `mise ls --json` | ✅ | ✅ | ❌ |
+| 🔧 | asdf | `asdf list` | ✅ | ✅ | ❌ |
 
 Only managers that are installed and return packages will appear in the output.
 

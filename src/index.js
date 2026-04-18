@@ -36,6 +36,7 @@ import pkgScanner from './scanners/pkg.js'
 import goScanner from './scanners/go.js'
 import condaScanner from './scanners/conda.js'
 import miseScanner from './scanners/mise.js'
+import asdfScanner from './scanners/asdf.js'
 import { renderAll } from './display/table.js'
 
 const ALL_SCANNERS = {
@@ -73,6 +74,7 @@ const ALL_SCANNERS = {
   go: goScanner,
   conda: condaScanner,
   mise: miseScanner,
+  asdf: asdfScanner,
 }
 
 export async function run(options) {
