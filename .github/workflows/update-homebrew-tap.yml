@@ -66,19 +66,19 @@ jobs:
 
           content = re.sub(
               r'url "https://registry\.npmjs\.org/@mulham28/pkgmap/-/pkgmap-[^"]+"',
-              f'url "https://registry.npmjs.org/@mulham28/pkgmap/-/pkgmap-{VERSION}.tgz"',
+              'url "https://registry.npmjs.org/@mulham28/pkgmap/-/pkgmap-$VERSION.tgz"',
               content,
           )
           content = re.sub(
               r'sha256 "[a-f0-9]+"',
-              f'sha256 "{SHA}"',
+              'sha256 "$SHA"',
               content,
           )
 
           with open("$FORMULA", "w") as f:
               f.write(content)
 
-          print(f"Updated formula to v{VERSION} ({SHA})")
+          print("Updated formula to v$VERSION ($SHA)")
           EOF
 
       - name: Commit and push
