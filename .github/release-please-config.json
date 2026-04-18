@@ -3,14 +3,7 @@
   "release-type": "node",
   "packages": {
     ".": {
-      "package-name": "@mulham28/pkgmap",
-      "extra-files": [
-        {
-          "type": "generic",
-          "path": "src/version.js",
-          "search-by-line": true
-        }
-      ]
+      "package-name": "@mulham28/pkgmap"
     }
   }
 }
