@@ -1,0 +1,92 @@
+name: Update Homebrew Tap
+
+on:
+  workflow_run:
+    workflows: ["Publish to npm"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  update-tap:
+    name: Bump pkgmap formula in homebrew-tap
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout pkgmap
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: main
+
+      - name: Read version from package.json
+        id: pkg
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Compute npm tarball sha256
+        id: sha
+        run: |
+          VERSION=${{ steps.pkg.outputs.version }}
+          URL="https://registry.npmjs.org/@mulham28/pkgmap/-/pkgmap-${VERSION}.tgz"
+
+          # Retry up to 5x — npm CDN may lag slightly after publish
+          for i in $(seq 1 5); do
+            SHA=$(curl -fsSL "$URL" | sha256sum | awk '{print $1}')
+            [ -n "$SHA" ] && break
+            echo "Attempt $i failed, retrying in 15s..."
+            sleep 15
+          done
+
+          if [ -z "$SHA" ]; then
+            echo "Failed to compute sha256 for $URL"
+            exit 1
+          fi
+
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Checkout homebrew-tap
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          repository: mulhamna/homebrew-tap
+          token: ${{ secrets.TAP_GITHUB_TOKEN }}
+          path: homebrew-tap
+
+      - name: Update formula
+        run: |
+          VERSION=${{ steps.pkg.outputs.version }}
+          SHA=${{ steps.sha.outputs.sha256 }}
+          FORMULA="homebrew-tap/Formula/pkgmap.rb"
+
+          python3 - <<EOF
+          import re
+
+          with open("$FORMULA") as f:
+              content = f.read()
+
+          content = re.sub(
+              r'url "https://registry\.npmjs\.org/@mulham28/pkgmap/-/pkgmap-[^"]+"',
+              f'url "https://registry.npmjs.org/@mulham28/pkgmap/-/pkgmap-{VERSION}.tgz"',
+              content,
+          )
+          content = re.sub(
+              r'sha256 "[a-f0-9]+"',
+              f'sha256 "{SHA}"',
+              content,
+          )
+
+          with open("$FORMULA", "w") as f:
+              f.write(content)
+
+          print(f"Updated formula to v{VERSION} ({SHA})")
+          EOF
+
+      - name: Commit and push
+        working-directory: homebrew-tap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/pkgmap.rb
+          git diff --staged --quiet && echo "No changes, skipping." && exit 0
+          git commit -m "chore: bump pkgmap to v${{ steps.pkg.outputs.version }}"
+          git push

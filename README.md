@@ -53,6 +53,9 @@ No more jumping between `npm list -g`, `brew list`, `pip list`, `flatpak list`, 
 | 🏔 | apk | `apk info -v` | ❌ | ✅ | ❌ |
 | 🦎 | zypper | `zypper search --installed-only --details --type package` | ❌ | ✅ | ❌ |
 | 🐡 | pkg | `pkg info` | ❌ | ❌ | ✅ |
+| 🐹 | go | `go env GOPATH` + scan `$GOPATH/bin` | ✅ | ✅ | ✅ |
+| 🐍 | conda / mamba | `conda list --json` / `mamba list --json` | ✅ | ✅ | ✅ |
+| 🛠 | mise | `mise ls --json` | ✅ | ✅ | ❌ |
 
 Only managers that are installed and return packages will appear in the output.
 
@@ -92,13 +95,29 @@ Only managers that are installed and return packages will appear in the output.
 
 ## Install
 
-### Via npm
+### One-liner
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/mulhamna/pkgmap/main/install.sh | sh
+```
+
+Auto-detects your OS and picks the best installer.
+
+### Via Homebrew (macOS / Linux)
+
+```bash
+brew tap mulhamna/tap
+brew install pkgmap
+```
+
+### Via npm / pnpm / yarn / volta / bun
 
 ```bash
 npm install -g @mulham28/pkgmap
 pnpm add -g @mulham28/pkgmap
 yarn global add @mulham28/pkgmap
 volta install @mulham28/pkgmap
+bun add -g @mulham28/pkgmap
 ```
 
 ### Manual install
