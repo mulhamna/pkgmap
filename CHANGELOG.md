@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.1.4...pkgmap-v1.2.0) (2026-04-18)
+
+
+### Features
+
+* add go, conda, mise scanners & homebrew tap automation ([#26](https://github.com/mulhamna/pkgmap/issues/26)) ([c7dd002](https://github.com/mulhamna/pkgmap/commit/c7dd002c3480108b9ef2789c6bc262b66d91357f))
+
 ## [1.1.4](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.1.3...pkgmap-v1.1.4) (2026-04-16)
 
 
