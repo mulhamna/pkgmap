@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.4.0...pkgmap-v1.5.0) (2026-05-07)
+
+
+### Features
+
+* sort package output alphabetically ([#43](https://github.com/mulhamna/pkgmap/issues/43)) ([fb9feff](https://github.com/mulhamna/pkgmap/commit/fb9fefffe81c227859d12e3c25654ad14ef70a45)), closes [#42](https://github.com/mulhamna/pkgmap/issues/42) [#41](https://github.com/mulhamna/pkgmap/issues/41) [#39](https://github.com/mulhamna/pkgmap/issues/39) [#37](https://github.com/mulhamna/pkgmap/issues/37) [#36](https://github.com/mulhamna/pkgmap/issues/36) [#35](https://github.com/mulhamna/pkgmap/issues/35) [#34](https://github.com/mulhamna/pkgmap/issues/34)
+
 ## [1.4.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.3.0...pkgmap-v1.4.0) (2026-04-18)
 
 
