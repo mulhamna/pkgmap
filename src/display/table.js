@@ -100,8 +100,9 @@ export function renderAll(results) {
 
   for (const result of results) {
     const icon = MANAGER_ICONS[result.manager] || '📦'
+    const sorted = [...result.packages].sort((a, b) => a.name.localeCompare(b.name))
 
-    for (const pkg of result.packages) {
+    for (const pkg of sorted) {
       const managers = packageManagerMap[pkg.name]
       const isDuplicate = managers.length > 1
       const otherManagers = managers.filter((m) => m !== result.manager)
