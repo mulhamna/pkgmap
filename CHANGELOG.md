@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.6.0...pkgmap-v1.7.0) (2026-05-13)
+
+
+### Features
+
+* add ports subcommand ([#47](https://github.com/mulhamna/pkgmap/issues/47)) ([a9e8a85](https://github.com/mulhamna/pkgmap/commit/a9e8a8561dcb79600eacb191f3b6856452821dad))
+
 ## [1.6.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.5.0...pkgmap-v1.6.0) (2026-05-13)
 
 
