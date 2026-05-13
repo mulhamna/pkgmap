@@ -31,6 +31,9 @@ export const MANAGER_ICONS = {
   apk: '🏔',
   zypper: '🦎',
   pkg: '🐡',
+  macports: '🚢',
+  opam: '🐫',
+  vcpkg: '🧱',
 }
 
 export function renderBanner() {
@@ -72,6 +75,7 @@ const TYPE_COLORS = {
   dotnet: (s) => chalk.cyan(s),
   system: (s) => chalk.white(s),
   plugin: (s) => chalk.magentaBright(s),
+  port: (s) => chalk.blueBright(s),
 }
 
 function colorType(type) {
