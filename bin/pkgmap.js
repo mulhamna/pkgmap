@@ -11,6 +11,7 @@ program
   .option('-m, --manager <name>', 'scan only a specific package manager')
   .option('-s, --search <package>', 'search for a specific package')
   .option('-e, --export', 'export results to pkgmap-export.json')
+  .option('-j, --json', 'print results as JSON to stdout')
   .action(run)
 
 program.parse()

@@ -78,7 +78,12 @@ const ALL_SCANNERS = {
 }
 
 export async function run(options) {
-  const { manager: filterManager, search: searchTerm, export: doExport } = options
+  const {
+    manager: filterManager,
+    search: searchTerm,
+    export: doExport,
+    json: doJson,
+  } = options
 
   let scanners = Object.entries(ALL_SCANNERS)
 
@@ -133,15 +138,22 @@ export async function run(options) {
     )
   }
 
+  const exportData = {
+    generatedAt: new Date().toISOString(),
+    results,
+  }
+
   if (doExport) {
-    const exportData = {
-      generatedAt: new Date().toISOString(),
-      results,
-    }
     writeFileSync('pkgmap-export.json', JSON.stringify(exportData, null, 2))
     console.log(chalk.green('✔ Exported to pkgmap-export.json'))
-    if (searchTerm) return
   }
+
+  if (doJson) {
+    console.log(JSON.stringify(exportData, null, 2))
+    return
+  }
+
+  if (doExport && searchTerm) return
 
   renderAll(results)
 }

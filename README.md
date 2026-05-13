@@ -152,9 +152,12 @@ pkgmap --manager apt
 pkgmap --search node
 pkgmap --search git
 
-# Export results to JSON
+# Export results to JSON file
 pkgmap --export
 # creates pkgmap-export.json
+
+# Print JSON directly to terminal
+pkgmap --json
 ```
 
 ---
@@ -166,6 +169,7 @@ pkgmap --export
 | `--manager <name>` | `-m` | Scan only a specific package manager |
 | `--search <package>` | `-s` | Search for a package by name |
 | `--export` | `-e` | Export results to `pkgmap-export.json` |
+| `--json` | `-j` | Print results as JSON to stdout |
 | `--version` | `-V` | Show version |
 | `--help` | `-h` | Show help |
 
