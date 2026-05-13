@@ -37,6 +37,9 @@ import goScanner from './scanners/go.js'
 import condaScanner from './scanners/conda.js'
 import miseScanner from './scanners/mise.js'
 import asdfScanner from './scanners/asdf.js'
+import macportsScanner from './scanners/macports.js'
+import opamScanner from './scanners/opam.js'
+import vcpkgScanner from './scanners/vcpkg.js'
 import { renderAll } from './display/table.js'
 
 const ALL_SCANNERS = {
@@ -75,6 +78,9 @@ const ALL_SCANNERS = {
   conda: condaScanner,
   mise: miseScanner,
   asdf: asdfScanner,
+  macports: macportsScanner,
+  opam: opamScanner,
+  vcpkg: vcpkgScanner,
 }
 
 export async function run(options) {

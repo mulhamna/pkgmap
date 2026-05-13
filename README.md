@@ -57,6 +57,9 @@ No more jumping between `npm list -g`, `brew list`, `pip list`, `flatpak list`, 
 | 🐍 | conda / mamba | `conda list --json` / `mamba list --json` | ✅ | ✅ | ✅ |
 | 🛠 | mise | `mise ls --json` | ✅ | ✅ | ❌ |
 | 🔧 | asdf | `asdf list` | ✅ | ✅ | ❌ |
+| 🚢 | macports | `port installed` | ✅ | ❌ | ❌ |
+| 🐫 | opam | `opam list --installed --columns=name,version --color=never` | ✅ | ✅ | ✅ |
+| 🧱 | vcpkg | `vcpkg list` | ✅ | ✅ | ✅ |
 
 Only managers that are installed and return packages will appear in the output.
 
@@ -183,7 +186,7 @@ pkgmap --json
 - Slow scanners, timeout and skip with a warning
 - Duplicate packages across managers, highlighted with cross-manager hints
 - Windows compatibility, unsupported managers auto-skipped and longer npm timeout applied
-- Arch Linux, Fedora/RHEL, Alpine, openSUSE, FreeBSD, Windows, Nix, Python tooling, Bun, and Kubernetes plugin ecosystems are now covered
+- Arch Linux, Fedora/RHEL, Alpine, openSUSE, FreeBSD, Windows, Nix, Python tooling, Bun, OCaml, MacPorts, vcpkg, and Kubernetes plugin ecosystems are now covered
 
 ---
 
