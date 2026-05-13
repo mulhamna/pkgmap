@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.5.0...pkgmap-v1.6.0) (2026-05-13)
+
+
+### Features
+
+* add JSON stdout output and more package scanners ([#45](https://github.com/mulhamna/pkgmap/issues/45)) ([cd5c681](https://github.com/mulhamna/pkgmap/commit/cd5c6812377a72c30d32b13bdf4deb61ff0c583c))
+
 ## [1.5.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.4.0...pkgmap-v1.5.0) (2026-05-07)
 
 
