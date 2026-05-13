@@ -84,7 +84,13 @@ const ALL_SCANNERS = {
 }
 
 export async function run(options) {
-  const { manager: filterManager, search: searchTerm, export: doExport, json: doJson } = options
+  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const {
+    manager: filterManager,
+    search: searchTerm,
+    export: doExport,
+    json: doJson,
+  } = resolvedOptions
 
   let scanners = Object.entries(ALL_SCANNERS)
 

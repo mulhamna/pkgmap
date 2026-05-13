@@ -16,6 +16,8 @@
 
 No more jumping between `npm list -g`, `brew list`, `pip list`, `flatpak list`, or distro-specific package commands. One command, one inventory view.
 
+Need a quick port check too? `pkgmap ports` extends the same CLI to show active listening ports without leaving the pkgmap flow.
+
 ---
 
 ## Supported Package Managers
@@ -161,6 +163,12 @@ pkgmap --export
 
 # Print JSON directly to terminal
 pkgmap --json
+
+# Show active listening ports
+pkgmap ports
+
+# Show active listening ports as JSON
+pkgmap ports --json
 ```
 
 ---
@@ -176,6 +184,13 @@ pkgmap --json
 | `--version` | `-V` | Show version |
 | `--help` | `-h` | Show help |
 
+### Ports subcommand
+
+| Command | Description |
+|---------|-------------|
+| `pkgmap ports` | Show active listening TCP ports |
+| `pkgmap ports --json` | Print active listening TCP ports as JSON |
+
 ---
 
 ## Edge Cases Handled
@@ -185,6 +200,7 @@ pkgmap --json
 - Permission issues, warning shown and scan continues
 - Slow scanners, timeout and skip with a warning
 - Duplicate packages across managers, highlighted with cross-manager hints
+- Active listening TCP ports via `pkgmap ports`
 - Windows compatibility, unsupported managers auto-skipped and longer npm timeout applied
 - Arch Linux, Fedora/RHEL, Alpine, openSUSE, FreeBSD, Windows, Nix, Python tooling, Bun, OCaml, MacPorts, vcpkg, and Kubernetes plugin ecosystems are now covered
 

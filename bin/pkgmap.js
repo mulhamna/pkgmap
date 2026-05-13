@@ -2,6 +2,7 @@
 import { program } from 'commander'
 import { createRequire } from 'module'
 import { run } from '../src/index.js'
+import { runPorts } from '../src/ports.js'
 import { APP_VERSION } from '../src/version.js'
 
 program
@@ -13,5 +14,11 @@ program
   .option('-e, --export', 'export results to pkgmap-export.json')
   .option('-j, --json', 'print results as JSON to stdout')
   .action(run)
+
+program
+  .command('ports')
+  .description('see active listening ports on your machine')
+  .option('-j, --json', 'print active ports as JSON to stdout')
+  .action(runPorts)
 
 program.parse()
