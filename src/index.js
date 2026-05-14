@@ -42,6 +42,50 @@ import opamScanner from './scanners/opam.js'
 import vcpkgScanner from './scanners/vcpkg.js'
 import { renderAll } from './display/table.js'
 
+export function normalizeWarning(args) {
+  return args
+    .map((arg) => {
+      if (typeof arg === 'string') return arg
+      if (arg instanceof Error) return arg.message
+      try {
+        return JSON.stringify(arg)
+      } catch {
+        return String(arg)
+      }
+    })
+    .join(' ')
+    .trim()
+}
+
+function printIssueSummary(scanIssues) {
+  if (scanIssues.length === 0) return
+
+  console.log()
+  console.log(chalk.yellow(`Warnings: ${scanIssues.length}`))
+
+  for (const issue of scanIssues) {
+    console.log(chalk.yellow(`- ${issue.manager}: ${issue.message}`))
+  }
+}
+
+export function filterDuplicatePackages(results) {
+  const packageManagerMap = new Map()
+
+  for (const result of results) {
+    for (const pkg of result.packages) {
+      if (!packageManagerMap.has(pkg.name)) packageManagerMap.set(pkg.name, new Set())
+      packageManagerMap.get(pkg.name).add(result.manager)
+    }
+  }
+
+  return results
+    .map((result) => ({
+      ...result,
+      packages: result.packages.filter((pkg) => packageManagerMap.get(pkg.name)?.size > 1),
+    }))
+    .filter((result) => result.packages.length > 0)
+}
+
 const ALL_SCANNERS = {
   npm: npmScanner,
   pnpm: pnpmScanner,
@@ -88,6 +132,7 @@ export async function run(options) {
   const {
     manager: filterManager,
     search: searchTerm,
+    duplicates: duplicatesOnly,
     export: doExport,
     json: doJson,
   } = resolvedOptions
@@ -106,14 +151,33 @@ export async function run(options) {
 
   const spinner = ora('Scanning package managers...').start()
 
-  const settled = await Promise.allSettled(
-    scanners.map(async ([_name, scanFn]) => {
-      const result = await scanFn()
-      return result
-    })
-  )
+  const scanIssues = []
+  const originalWarn = console.warn
 
+  console.warn = (...args) => {
+    const message = normalizeWarning(args)
+    const managerMatch = message.match(/^⚠\s*([a-z0-9-]+):/i)
+    scanIssues.push({
+      manager: managerMatch?.[1] || 'scan',
+      message,
+      level: 'warning',
+    })
+  }
+
+  const settled = await Promise.allSettled(scanners.map(([_name, scanFn]) => scanFn()))
+
+  console.warn = originalWarn
   spinner.stop()
+
+  settled.forEach((entry, index) => {
+    if (entry.status === 'rejected') {
+      scanIssues.push({
+        manager: scanners[index][0],
+        message: entry.reason?.message || 'scan failed unexpectedly',
+        level: 'error',
+      })
+    }
+  })
 
   let results = settled
     .map((s) => (s.status === 'fulfilled' ? s.value : null))
@@ -121,6 +185,7 @@ export async function run(options) {
 
   if (results.length === 0) {
     console.log(chalk.yellow('No package managers found or all scans failed.'))
+    printIssueSummary(scanIssues)
     return
   }
 
@@ -145,9 +210,20 @@ export async function run(options) {
     )
   }
 
+  if (duplicatesOnly) {
+    results = filterDuplicatePackages(results)
+
+    if (results.length === 0) {
+      console.log(chalk.yellow('No duplicate packages found across managers.'))
+      printIssueSummary(scanIssues)
+      return
+    }
+  }
+
   const exportData = {
     generatedAt: new Date().toISOString(),
     results,
+    warnings: scanIssues,
   }
 
   if (doExport) {
@@ -163,4 +239,5 @@ export async function run(options) {
   if (doExport && searchTerm) return
 
   renderAll(results)
+  printIssueSummary(scanIssues)
 }

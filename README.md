@@ -157,6 +157,9 @@ pkgmap --manager apt
 pkgmap --search node
 pkgmap --search git
 
+# Show only duplicate packages installed via multiple managers
+pkgmap --duplicates
+
 # Export results to JSON file
 pkgmap --export
 # creates pkgmap-export.json
@@ -179,6 +182,7 @@ pkgmap ports --json
 |------|-----------|-------------|
 | `--manager <name>` | `-m` | Scan only a specific package manager |
 | `--search <package>` | `-s` | Search for a package by name |
+| `--duplicates` | `-d` | Show only packages installed via multiple managers |
 | `--export` | `-e` | Export results to `pkgmap-export.json` |
 | `--json` | `-j` | Print results as JSON to stdout |
 | `--version` | `-V` | Show version |

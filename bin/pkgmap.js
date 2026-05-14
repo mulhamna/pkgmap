@@ -11,6 +11,7 @@ program
   .version(APP_VERSION)
   .option('-m, --manager <name>', 'scan only a specific package manager')
   .option('-s, --search <package>', 'search for a specific package')
+  .option('-d, --duplicates', 'show only packages installed via multiple managers')
   .option('-e, --export', 'export results to pkgmap-export.json')
   .option('-j, --json', 'print results as JSON to stdout')
   .action(run)
