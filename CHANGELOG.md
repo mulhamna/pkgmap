@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.7.0...pkgmap-v1.8.0) (2026-05-14)
+
+
+### Features
+
+* add duplicate package scan filter ([#50](https://github.com/mulhamna/pkgmap/issues/50)) ([b9d16d4](https://github.com/mulhamna/pkgmap/commit/b9d16d4adec0d426d9a7a16d8539786f58f45ebc))
+
 ## [1.7.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.6.0...pkgmap-v1.7.0) (2026-05-13)
 
 
