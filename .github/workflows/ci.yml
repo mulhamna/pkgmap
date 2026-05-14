@@ -39,6 +39,9 @@ jobs:
       - name: Run Prettier check
         run: npm run format:check
 
+      - name: Run unit tests
+        run: npm test
+
       - name: Verify version sync
         run: npm run release:check
 

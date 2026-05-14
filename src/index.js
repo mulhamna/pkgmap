@@ -42,7 +42,7 @@ import opamScanner from './scanners/opam.js'
 import vcpkgScanner from './scanners/vcpkg.js'
 import { renderAll } from './display/table.js'
 
-function normalizeWarning(args) {
+export function normalizeWarning(args) {
   return args
     .map((arg) => {
       if (typeof arg === 'string') return arg
@@ -66,6 +66,24 @@ function printIssueSummary(scanIssues) {
   for (const issue of scanIssues) {
     console.log(chalk.yellow(`- ${issue.manager}: ${issue.message}`))
   }
+}
+
+export function filterDuplicatePackages(results) {
+  const packageManagerMap = new Map()
+
+  for (const result of results) {
+    for (const pkg of result.packages) {
+      if (!packageManagerMap.has(pkg.name)) packageManagerMap.set(pkg.name, new Set())
+      packageManagerMap.get(pkg.name).add(result.manager)
+    }
+  }
+
+  return results
+    .map((result) => ({
+      ...result,
+      packages: result.packages.filter((pkg) => packageManagerMap.get(pkg.name)?.size > 1),
+    }))
+    .filter((result) => result.packages.length > 0)
 }
 
 const ALL_SCANNERS = {
@@ -193,21 +211,7 @@ export async function run(options) {
   }
 
   if (duplicatesOnly) {
-    const packageManagerMap = new Map()
-
-    for (const result of results) {
-      for (const pkg of result.packages) {
-        if (!packageManagerMap.has(pkg.name)) packageManagerMap.set(pkg.name, new Set())
-        packageManagerMap.get(pkg.name).add(result.manager)
-      }
-    }
-
-    results = results
-      .map((result) => ({
-        ...result,
-        packages: result.packages.filter((pkg) => packageManagerMap.get(pkg.name)?.size > 1),
-      }))
-      .filter((result) => result.packages.length > 0)
+    results = filterDuplicatePackages(results)
 
     if (results.length === 0) {
       console.log(chalk.yellow('No duplicate packages found across managers.'))
