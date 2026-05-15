@@ -44,21 +44,47 @@ test('filterDuplicatePackages keeps only packages seen in multiple managers', ()
 
 test('annotatePorts marks orphan and zombie listeners', () => {
   const ports = [
-    { port: 3000, protocol: 'tcp', address: '127.0.0.1', process: 'node', pid: 111, state: 'LISTEN' },
-    { port: 4000, protocol: 'tcp', address: '0.0.0.0', process: 'unknown', pid: null, state: 'LISTEN' },
-    { port: 5000, protocol: 'tcp', address: '0.0.0.0', process: 'python', pid: 222, state: 'LISTEN' },
+    {
+      port: 3000,
+      protocol: 'tcp',
+      address: '127.0.0.1',
+      process: 'node',
+      pid: 111,
+      state: 'LISTEN',
+    },
+    {
+      port: 4000,
+      protocol: 'tcp',
+      address: '0.0.0.0',
+      process: 'unknown',
+      pid: null,
+      state: 'LISTEN',
+    },
+    {
+      port: 5000,
+      protocol: 'tcp',
+      address: '0.0.0.0',
+      process: 'python',
+      pid: 222,
+      state: 'LISTEN',
+    },
   ]
 
   const annotated = annotatePorts(ports, (pid) => {
-    if (pid === 111) return { healthStatus: 'ok', reason: 'process found', meta: { command: 'node' } }
-    if (pid === 222) return { healthStatus: 'zombie', reason: 'zombie process', meta: { command: 'python' } }
+    if (pid === 111)
+      return { healthStatus: 'ok', reason: 'process found', meta: { command: 'node' } }
+    if (pid === 222)
+      return { healthStatus: 'zombie', reason: 'zombie process', meta: { command: 'python' } }
     return { healthStatus: 'orphan', reason: 'pid not found' }
   })
 
   assert.equal(annotated[0].healthStatus, 'ok')
   assert.equal(annotated[1].healthStatus, 'orphan')
   assert.equal(annotated[2].healthStatus, 'zombie')
-  assert.deepEqual(filterSuspiciousPorts(annotated).map((entry) => entry.port), [4000, 5000])
+  assert.deepEqual(
+    filterSuspiciousPorts(annotated).map((entry) => entry.port),
+    [4000, 5000]
+  )
 })
 
 test('terminatePorts deduplicates PIDs before signalling', () => {

@@ -28,7 +28,9 @@ export function inspectPid(pid, platform = process.platform) {
       const raw = execSync(`tasklist /FI "PID eq ${pid}" /FO CSV /NH`, {
         stdio: ['ignore', 'pipe', 'ignore'],
         timeout: 10000,
-      }).toString().trim()
+      })
+        .toString()
+        .trim()
 
       if (!raw || raw.startsWith('INFO:')) {
         return { healthStatus: 'orphan', reason: 'pid not found' }
@@ -48,7 +50,8 @@ export function inspectPid(pid, platform = process.platform) {
 
     const row = parsePsRow(raw)
     if (!row) return { healthStatus: 'orphan', reason: 'pid not found' }
-    if (row.stat.includes('Z')) return { healthStatus: 'zombie', reason: 'zombie process', meta: row }
+    if (row.stat.includes('Z'))
+      return { healthStatus: 'zombie', reason: 'zombie process', meta: row }
 
     return { healthStatus: 'ok', reason: 'process found', meta: row }
   } catch {
@@ -65,7 +68,9 @@ export function annotatePorts(ports, pidInspector = inspectPid) {
     return {
       ...entry,
       healthStatus,
-      healthReason: inspection?.reason || (fallbackStatus === 'orphan' ? 'missing owner metadata' : 'process found'),
+      healthReason:
+        inspection?.reason ||
+        (fallbackStatus === 'orphan' ? 'missing owner metadata' : 'process found'),
       processCommand: inspection?.meta?.command || entry.process,
     }
   })
@@ -319,7 +324,9 @@ export async function runPorts(options) {
         process.exit(1)
       }
 
-      const { killed, skipped } = terminatePorts(matched, { signal: useForce ? 'SIGKILL' : 'SIGTERM' })
+      const { killed, skipped } = terminatePorts(matched, {
+        signal: useForce ? 'SIGKILL' : 'SIGTERM',
+      })
 
       console.log(
         chalk.green(
