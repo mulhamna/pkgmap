@@ -170,6 +170,15 @@ pkgmap --json
 # Show active listening ports
 pkgmap ports
 
+# Show only suspicious listeners (orphan / zombie)
+pkgmap ports --check
+
+# Gracefully stop whatever owns a port
+pkgmap ports --kill 3000
+
+# Force-kill a stuck listener
+pkgmap ports --kill 3000 --force
+
 # Show active listening ports as JSON
 pkgmap ports --json
 ```
@@ -193,6 +202,9 @@ pkgmap ports --json
 | Command | Description |
 |---------|-------------|
 | `pkgmap ports` | Show active listening TCP ports |
+| `pkgmap ports --check` | Show only orphan or zombie listening TCP ports |
+| `pkgmap ports --kill <port-or-pid>` | Send SIGTERM to the process behind a listening port or PID |
+| `pkgmap ports --kill <port-or-pid> --force` | Send SIGKILL instead of SIGTERM |
 | `pkgmap ports --json` | Print active listening TCP ports as JSON |
 
 ---
@@ -205,6 +217,8 @@ pkgmap ports --json
 - Slow scanners, timeout and skip with a warning
 - Duplicate packages across managers, highlighted with cross-manager hints
 - Active listening TCP ports via `pkgmap ports`
+- Orphan / zombie listener checks via `pkgmap ports --check`
+- Graceful or forced listener termination via `pkgmap ports --kill <port-or-pid>`
 - Windows compatibility, unsupported managers auto-skipped and longer npm timeout applied
 - Arch Linux, Fedora/RHEL, Alpine, openSUSE, FreeBSD, Windows, Nix, Python tooling, Bun, OCaml, MacPorts, vcpkg, and Kubernetes plugin ecosystems are now covered
 

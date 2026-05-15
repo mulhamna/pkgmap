@@ -6,6 +6,97 @@ import { renderBanner } from './display/table.js'
 import { renderPorts } from './display/ports.js'
 import { isAvailable } from './utils.js'
 
+function parsePsRow(raw) {
+  const trimmed = raw.trim()
+  if (!trimmed) return null
+
+  const match = trimmed.match(/^(\d+)\s+(.+?)\s+(.+)$/)
+  if (!match) return null
+
+  return {
+    ppid: Number(match[1]),
+    stat: match[2],
+    command: match[3].trim(),
+  }
+}
+
+export function inspectPid(pid, platform = process.platform) {
+  if (!pid) return { healthStatus: 'orphan', reason: 'missing pid' }
+
+  if (platform === 'win32') {
+    try {
+      const raw = execSync(`tasklist /FI "PID eq ${pid}" /FO CSV /NH`, {
+        stdio: ['ignore', 'pipe', 'ignore'],
+        timeout: 10000,
+      })
+        .toString()
+        .trim()
+
+      if (!raw || raw.startsWith('INFO:')) {
+        return { healthStatus: 'orphan', reason: 'pid not found' }
+      }
+
+      return { healthStatus: 'ok', reason: 'process found' }
+    } catch {
+      return { healthStatus: 'orphan', reason: 'pid lookup failed' }
+    }
+  }
+
+  try {
+    const raw = execSync(`ps -o ppid=,stat=,comm= -p ${pid}`, {
+      stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: 10000,
+    }).toString()
+
+    const row = parsePsRow(raw)
+    if (!row) return { healthStatus: 'orphan', reason: 'pid not found' }
+    if (row.stat.includes('Z'))
+      return { healthStatus: 'zombie', reason: 'zombie process', meta: row }
+
+    return { healthStatus: 'ok', reason: 'process found', meta: row }
+  } catch {
+    return { healthStatus: 'orphan', reason: 'pid lookup failed' }
+  }
+}
+
+export function annotatePorts(ports, pidInspector = inspectPid) {
+  return ports.map((entry) => {
+    const fallbackStatus = !entry.pid || entry.process === 'unknown' ? 'orphan' : 'ok'
+    const inspection = entry.pid ? pidInspector(entry.pid) : null
+    const healthStatus = inspection?.healthStatus || fallbackStatus
+
+    return {
+      ...entry,
+      healthStatus,
+      healthReason:
+        inspection?.reason ||
+        (fallbackStatus === 'orphan' ? 'missing owner metadata' : 'process found'),
+      processCommand: inspection?.meta?.command || entry.process,
+    }
+  })
+}
+
+export function filterSuspiciousPorts(ports) {
+  return ports.filter((entry) => entry.healthStatus === 'orphan' || entry.healthStatus === 'zombie')
+}
+
+export function terminatePorts(ports, { signal = 'SIGTERM' } = {}) {
+  const targets = [...new Set(ports.map((entry) => entry.pid).filter(Boolean))]
+
+  if (targets.length === 0) {
+    return { killed: [], skipped: ports }
+  }
+
+  for (const pid of targets) {
+    process.kill(pid, signal)
+  }
+
+  return {
+    killed: targets,
+    skipped: ports.filter((entry) => !entry.pid),
+  }
+}
+
 function splitAddressPort(value) {
   const normalized = value.trim()
 
@@ -195,6 +286,9 @@ export async function runPorts(options) {
     process.argv.includes('--json') ||
     process.argv.includes('-j')
   )
+  const killTarget = resolvedOptions?.kill
+  const useForce = Boolean(resolvedOptions?.force)
+  const suspiciousOnly = Boolean(resolvedOptions?.check)
 
   const spinner = ora('Inspecting active ports...').start()
 
@@ -217,8 +311,52 @@ export async function runPorts(options) {
       return
     }
 
+    const annotated = annotatePorts(ports)
+
+    if (killTarget) {
+      const numericTarget = Number(killTarget)
+      const matched = annotated.filter(
+        (entry) => entry.port === numericTarget || String(entry.pid || '') === String(killTarget)
+      )
+
+      if (matched.length === 0) {
+        console.error(chalk.red(`✗ No listening port or PID matched "${killTarget}".`))
+        process.exit(1)
+      }
+
+      const { killed, skipped } = terminatePorts(matched, {
+        signal: useForce ? 'SIGKILL' : 'SIGTERM',
+      })
+
+      console.log(
+        chalk.green(
+          `✔ Sent ${useForce ? 'SIGKILL' : 'SIGTERM'} to ${killed.length} process(es) for ${matched.length} matching listener(s).`
+        )
+      )
+
+      if (skipped.length > 0) {
+        console.log(chalk.yellow(`Skipped ${skipped.length} listener(s) with no PID metadata.`))
+      }
+
+      renderPorts(matched, { includeHealth: true })
+      return
+    }
+
+    if (suspiciousOnly) {
+      const suspicious = filterSuspiciousPorts(annotated)
+
+      if (suspicious.length === 0) {
+        console.log(chalk.green('✔ No orphan or zombie listening ports found.'))
+        return
+      }
+
+      renderBanner()
+      renderPorts(suspicious, { includeHealth: true })
+      return
+    }
+
     renderBanner()
-    renderPorts(ports)
+    renderPorts(annotated)
   } catch (err) {
     spinner.stop()
     console.error(chalk.red(`✗ ${err.message || 'Failed to inspect active ports.'}`))

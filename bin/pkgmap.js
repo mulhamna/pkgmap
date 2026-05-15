@@ -20,6 +20,9 @@ program
   .command('ports')
   .description('see active listening ports on your machine')
   .option('-j, --json', 'print active ports as JSON to stdout')
+  .option('-k, --kill <port-or-pid>', 'terminate the process listening on a port (or matching a PID)')
+  .option('-f, --force', 'use SIGKILL instead of SIGTERM when used with --kill')
+  .option('-c, --check', 'show only orphan or zombie listening ports')
   .action(runPorts)
 
 program.parse()
