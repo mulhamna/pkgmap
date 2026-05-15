@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.8.0...pkgmap-v1.9.0) (2026-05-15)
+
+
+### Features
+
+* add ports process controls ([#52](https://github.com/mulhamna/pkgmap/issues/52)) ([d63ef2b](https://github.com/mulhamna/pkgmap/commit/d63ef2b11b5fd4a79546f74f2f7d06b4231c88bd))
+
 ## [1.8.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.7.0...pkgmap-v1.8.0) (2026-05-14)
 
 
