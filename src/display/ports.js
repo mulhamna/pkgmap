@@ -1,7 +1,14 @@
 import Table from 'cli-table3'
 import chalk from 'chalk'
 
-export function renderPorts(ports) {
+function renderHealth(status) {
+  if (status === 'zombie') return chalk.red('zombie')
+  if (status === 'orphan') return chalk.yellow('orphan')
+  return chalk.green('ok')
+}
+
+export function renderPorts(ports, options = {}) {
+  const includeHealth = Boolean(options.includeHealth)
   const table = new Table({
     head: [
       chalk.bold('Port'),
@@ -10,8 +17,9 @@ export function renderPorts(ports) {
       chalk.bold('PID'),
       chalk.bold('Address'),
       chalk.bold('State'),
+      ...(includeHealth ? [chalk.bold('Health')] : []),
     ],
-    colWidths: [8, 10, 22, 10, 28, 12],
+    colWidths: includeHealth ? [8, 10, 22, 10, 28, 12, 12] : [8, 10, 22, 10, 28, 12],
     style: { head: [], border: [] },
   })
 
@@ -23,6 +31,7 @@ export function renderPorts(ports) {
       item.pid ? chalk.yellow(String(item.pid)) : chalk.dim('—'),
       chalk.dim(item.address),
       chalk.green(item.state),
+      ...(includeHealth ? [renderHealth(item.healthStatus)] : []),
     ])
   }
 
