@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.9.0...pkgmap-v1.9.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* harden scanner parsers ([#55](https://github.com/mulhamna/pkgmap/issues/55)) ([e66d71f](https://github.com/mulhamna/pkgmap/commit/e66d71f3f0fde0dfc0ebcd7a929fa0883dee68ac))
+* make homebrew tap version output robust ([#57](https://github.com/mulhamna/pkgmap/issues/57)) ([01552bf](https://github.com/mulhamna/pkgmap/commit/01552bf4e80b80067927eff0bb9ac28ed3a4fb8a))
+* respect ports json subcommand modes ([#54](https://github.com/mulhamna/pkgmap/issues/54)) ([f08f4a1](https://github.com/mulhamna/pkgmap/commit/f08f4a173b52cdb91b0e2d338aabd606689a3721))
+
 ## [1.9.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.8.0...pkgmap-v1.9.0) (2026-05-15)
 
 
