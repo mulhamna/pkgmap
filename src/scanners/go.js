@@ -9,7 +9,9 @@ export function parseGoBinaryMetadata(raw, binaryName) {
     .map((line) => line.trim())
     .filter(Boolean)
 
-  const hasGoBuildMetadata = lines.some((line) => line.startsWith('path\t') || line.startsWith('mod\t'))
+  const hasGoBuildMetadata = lines.some(
+    (line) => line.startsWith('path\t') || line.startsWith('mod\t')
+  )
   if (!hasGoBuildMetadata) return null
 
   const modLine = lines.find((line) => line.startsWith('mod\t'))
