@@ -301,16 +301,6 @@ export async function runPorts(options) {
       return
     }
 
-    const payload = {
-      generatedAt: new Date().toISOString(),
-      ports,
-    }
-
-    if (doJson) {
-      console.log(JSON.stringify(payload, null, 2))
-      return
-    }
-
     const annotated = annotatePorts(ports)
 
     if (killTarget) {
@@ -322,6 +312,20 @@ export async function runPorts(options) {
       if (matched.length === 0) {
         console.error(chalk.red(`✗ No listening port or PID matched "${killTarget}".`))
         process.exit(1)
+      }
+
+      if (doJson) {
+        console.log(
+          JSON.stringify(
+            {
+              generatedAt: new Date().toISOString(),
+              ports: matched,
+            },
+            null,
+            2
+          )
+        )
+        return
       }
 
       const { killed, skipped } = terminatePorts(matched, {
@@ -350,8 +354,36 @@ export async function runPorts(options) {
         return
       }
 
+      if (doJson) {
+        console.log(
+          JSON.stringify(
+            {
+              generatedAt: new Date().toISOString(),
+              ports: suspicious,
+            },
+            null,
+            2
+          )
+        )
+        return
+      }
+
       renderBanner()
       renderPorts(suspicious, { includeHealth: true })
+      return
+    }
+
+    if (doJson) {
+      console.log(
+        JSON.stringify(
+          {
+            generatedAt: new Date().toISOString(),
+            ports,
+          },
+          null,
+          2
+        )
+      )
       return
     }
 
