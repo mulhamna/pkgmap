@@ -1,6 +1,5 @@
 import { readdirSync } from 'fs'
 import { join } from 'path'
-import { isAvailable } from '../utils.js'
 
 function getGradleCacheRoot() {
   const home = process.env.USERPROFILE || process.env.HOME
@@ -9,8 +8,6 @@ function getGradleCacheRoot() {
 }
 
 export default async function scan() {
-  if (!isAvailable('gradle')) return null
-
   const root = getGradleCacheRoot()
   if (!root) return null
 

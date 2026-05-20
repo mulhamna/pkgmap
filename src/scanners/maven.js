@@ -1,6 +1,5 @@
 import { readdirSync } from 'fs'
 import { join } from 'path'
-import { isAvailable } from '../utils.js'
 
 function getMavenRepoRoot() {
   const home = process.env.USERPROFILE || process.env.HOME
@@ -35,8 +34,6 @@ function walkMavenRepo(root, relativeParts = [], collector = []) {
 }
 
 export default async function scan() {
-  if (!isAvailable('mvn')) return null
-
   const root = getMavenRepoRoot()
   if (!root) return null
 
