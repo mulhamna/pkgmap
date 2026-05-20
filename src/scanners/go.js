@@ -1,7 +1,26 @@
-import { execSync } from 'child_process'
-import { readdirSync } from 'fs'
+import { execFileSync, execSync } from 'child_process'
+import { readdirSync, statSync } from 'fs'
 import { join } from 'path'
 import { isAvailable } from '../utils.js'
+
+export function parseGoBinaryMetadata(raw, binaryName) {
+  const lines = raw
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  const hasGoBuildMetadata = lines.some((line) => line.startsWith('path\t') || line.startsWith('mod\t'))
+  if (!hasGoBuildMetadata) return null
+
+  const modLine = lines.find((line) => line.startsWith('mod\t'))
+  const version = modLine?.split(/\s+/)[2] || 'installed'
+
+  return {
+    name: binaryName,
+    version,
+    type: 'binary',
+  }
+}
 
 export default async function scan() {
   if (!isAvailable('go')) return null
@@ -26,7 +45,27 @@ export default async function scan() {
 
     if (binaries.length === 0) return null
 
-    const packages = binaries.map((name) => ({ name, version: 'installed' }))
+    const packages = []
+
+    for (const name of binaries) {
+      const binaryPath = join(binDir, name)
+
+      try {
+        if (!statSync(binaryPath).isFile()) continue
+
+        const raw = execFileSync('go', ['version', '-m', binaryPath], {
+          stdio: ['ignore', 'pipe', 'ignore'],
+          timeout: 2000,
+        }).toString()
+
+        const pkg = parseGoBinaryMetadata(raw, name)
+        if (pkg) packages.push(pkg)
+      } catch {
+        // Ignore non-Go or unreadable binaries in GOPATH/bin.
+      }
+    }
+
+    if (packages.length === 0) return null
 
     return { manager: 'go', packages }
   } catch (err) {

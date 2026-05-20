@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 
 import { filterDuplicatePackages, normalizeWarning } from '../src/index.js'
 import { annotatePorts, filterSuspiciousPorts, terminatePorts } from '../src/ports.js'
+import { parseGoBinaryMetadata } from '../src/scanners/go.js'
+import { parseVcpkgList } from '../src/scanners/vcpkg.js'
 
 test('normalizeWarning flattens mixed warning arguments', () => {
   const error = new Error('kaput')
@@ -106,4 +108,42 @@ test('terminatePorts deduplicates PIDs before signalling', () => {
   } finally {
     process.kill = originalKill
   }
+})
+
+test('parseVcpkgList ignores footer lines', () => {
+  const raw = [
+    'abseil:x64-windows 20240116.1#1',
+    'zlib:x64-windows 1.3.1#2',
+    'Total installed packages: 2',
+  ].join('\n')
+
+  assert.deepEqual(parseVcpkgList(raw), [
+    {
+      name: 'abseil:x64-windows',
+      version: '20240116.1#1',
+      type: 'library',
+    },
+    {
+      name: 'zlib:x64-windows',
+      version: '1.3.1#2',
+      type: 'library',
+    },
+  ])
+})
+
+test('parseGoBinaryMetadata keeps only binaries with Go build metadata', () => {
+  const raw = [
+    '/tmp/gopls: go1.24.0',
+    '\tpath\tgolang.org/x/tools/gopls',
+    '\tmod\tgolang.org/x/tools/gopls\tv0.16.2\th1:abc',
+    '\tbuild\t-buildmode=exe',
+  ].join('\n')
+
+  assert.deepEqual(parseGoBinaryMetadata(raw, 'gopls'), {
+    name: 'gopls',
+    version: 'v0.16.2',
+    type: 'binary',
+  })
+
+  assert.equal(parseGoBinaryMetadata('not a Go executable', 'random-tool'), null)
 })
