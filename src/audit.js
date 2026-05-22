@@ -77,17 +77,43 @@ function colorStatus(status) {
   return chalk.cyan(status)
 }
 
+function summarizeAuditBucket(status) {
+  if (status === 'ok') return 'ok'
+  if (status === 'error') return 'error'
+  if (status.includes('critical:')) return 'critical'
+  if (status.includes('high:')) return 'high'
+  if (status.includes('medium:')) return 'medium'
+  if (status.includes('low:')) return 'low'
+  if (status.includes('advisory:')) return 'advisory'
+  return 'other'
+}
+
 function renderAuditSummary(results) {
-  const managerCounts = new Map()
+  const managerCounts = new Set()
+  const bucketCounts = new Map()
 
   for (const result of results) {
-    managerCounts.set(result.manager, (managerCounts.get(result.manager) || 0) + 1)
+    managerCounts.add(result.manager)
+    const bucket = summarizeAuditBucket(result.status)
+    bucketCounts.set(bucket, (bucketCounts.get(bucket) || 0) + 1)
   }
 
-  const parts = [...managerCounts.entries()].map(([manager, count]) => {
-    const icon = MANAGER_ICONS[manager] || '📦'
-    return `${icon} ${chalk.bold(manager)}: ${chalk.yellow(count)}`
-  })
+  const bucketMeta = [
+    ['ok', '✅'],
+    ['advisory', '🟣'],
+    ['low', '🔵'],
+    ['medium', '🟠'],
+    ['high', '🟡'],
+    ['critical', '🔴'],
+    ['error', '⚠️'],
+    ['other', '❔'],
+  ]
+
+  const parts = bucketMeta
+    .filter(([bucket]) => bucketCounts.get(bucket) > 0)
+    .map(
+      ([bucket, icon]) => `${icon} ${chalk.bold(bucket)}: ${chalk.yellow(bucketCounts.get(bucket))}`
+    )
 
   console.log('  ' + parts.join(chalk.dim('  ·  ')))
   console.log(
