@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.10.0...pkgmap-v1.10.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* align audit output with main pkgmap display ([#64](https://github.com/mulhamna/pkgmap/issues/64)) ([ee16466](https://github.com/mulhamna/pkgmap/commit/ee16466caeef226339f469495675f69fa9339de5))
+
 ## [1.10.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.9.1...pkgmap-v1.10.0) (2026-05-22)
 
 
