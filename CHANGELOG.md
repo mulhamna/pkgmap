@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.9.1...pkgmap-v1.10.0) (2026-05-22)
+
+
+### Features
+
+* add package audit status command ([#60](https://github.com/mulhamna/pkgmap/issues/60)) ([d50ed67](https://github.com/mulhamna/pkgmap/commit/d50ed674c414341d2f1d2edc5e9c4311f932c78a))
+
 ## [1.9.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.9.0...pkgmap-v1.9.1) (2026-05-20)
 
 
