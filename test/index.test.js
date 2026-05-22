@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import { filterDuplicatePackages, normalizeWarning } from '../src/index.js'
+import { formatAuditStatus, getAuditEcosystem } from '../src/audit.js'
 import { annotatePorts, filterSuspiciousPorts, terminatePorts } from '../src/ports.js'
 import { parseGoBinaryMetadata } from '../src/scanners/go.js'
 import { parseVcpkgList } from '../src/scanners/vcpkg.js'
@@ -87,6 +88,22 @@ test('annotatePorts marks orphan and zombie listeners', () => {
     filterSuspiciousPorts(annotated).map((entry) => entry.port),
     [4000, 5000]
   )
+})
+
+test('formatAuditStatus summarizes vulnerability severity counts', () => {
+  const status = formatAuditStatus([
+    { severity: [{ score: 'CVSS_V3:CRITICAL/9.8' }] },
+    { severity: [{ score: 'CVSS_V3:HIGH/8.1' }] },
+    { severity: [{ score: 'CVSS_V3:HIGH/7.5' }] },
+  ])
+
+  assert.equal(status, 'critical:1, high:2')
+})
+
+test('getAuditEcosystem maps supported managers', () => {
+  assert.equal(getAuditEcosystem('npm'), 'npm')
+  assert.equal(getAuditEcosystem('cargo'), 'crates.io')
+  assert.equal(getAuditEcosystem('apt'), null)
 })
 
 test('terminatePorts deduplicates PIDs before signalling', () => {
