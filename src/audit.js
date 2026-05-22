@@ -2,6 +2,7 @@ import ora from 'ora'
 import chalk from 'chalk'
 import Table from 'cli-table3'
 
+import { renderBanner, MANAGER_ICONS } from './display/table.js'
 import { ALL_SCANNERS, printIssueSummary } from './index.js'
 
 const OSV_QUERY_BATCH_URL = 'https://api.osv.dev/v1/querybatch'
@@ -78,14 +79,43 @@ function colorStatus(status) {
   return chalk.magenta(status)
 }
 
+function renderAuditSummary(results) {
+  const managerCounts = new Map()
+
+  for (const result of results) {
+    managerCounts.set(result.manager, (managerCounts.get(result.manager) || 0) + 1)
+  }
+
+  const parts = [...managerCounts.entries()].map(([manager, count]) => {
+    const icon = MANAGER_ICONS[manager] || '📦'
+    return `${icon} ${chalk.bold(manager)}: ${chalk.yellow(count)}`
+  })
+
+  console.log('  ' + parts.join(chalk.dim('  ·  ')))
+  console.log(
+    '  ' +
+      chalk.dim(
+        `Total: ${chalk.bold.white(results.length)} package audit check(s) across ${managerCounts.size} manager(s)`
+      )
+  )
+  console.log()
+}
+
 function renderAuditResults(results) {
+  renderBanner()
+  renderAuditSummary(results)
+
   const table = new Table({
     head: [chalk.bold('Package Manager'), chalk.bold('Package'), chalk.bold('Status')],
     colWidths: [18, 38, 24],
     style: { head: [], border: [] },
   })
 
-  for (const result of results) {
+  const sorted = [...results].sort(
+    (a, b) => a.manager.localeCompare(b.manager) || a.package.localeCompare(b.package)
+  )
+
+  for (const result of sorted) {
     table.push([result.manager, result.package, colorStatus(result.status)])
   }
 
