@@ -116,7 +116,8 @@ function renderAuditResults(results) {
   )
 
   for (const result of sorted) {
-    table.push([result.manager, result.package, colorStatus(result.status)])
+    const icon = MANAGER_ICONS[result.manager] || '📦'
+    table.push([`${icon} ${result.manager}`, result.package, colorStatus(result.status)])
   }
 
   console.log(table.toString())
