@@ -167,6 +167,12 @@ pkgmap --export
 # Print JSON directly to terminal
 pkgmap --json
 
+# Check audit status for installed npm packages
+pkgmap audit --manager npm
+
+# Check one package only
+pkgmap audit --manager cargo --package ripgrep
+
 # Show active listening ports
 pkgmap ports
 
@@ -197,6 +203,14 @@ pkgmap ports --json
 | `--version` | `-V` | Show version |
 | `--help` | `-h` | Show help |
 
+### Audit subcommand
+
+| Command | Description |
+|---------|-------------|
+| `pkgmap audit --manager npm` | Check installed packages from one manager against OSV advisories |
+| `pkgmap audit --manager cargo --package ripgrep` | Check only matching package names |
+| `pkgmap audit --json` | Print audit results as JSON |
+
 ### Ports subcommand
 
 | Command | Description |
@@ -216,6 +230,7 @@ pkgmap ports --json
 - Permission issues, warning shown and scan continues
 - Slow scanners, timeout and skip with a warning
 - Duplicate packages across managers, highlighted with cross-manager hints
+- Package audit status checks via `pkgmap audit` with per-package status output
 - Active listening TCP ports via `pkgmap ports`
 - Orphan / zombie listener checks via `pkgmap ports --check`
 - Graceful or forced listener termination via `pkgmap ports --kill <port-or-pid>`

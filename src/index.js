@@ -57,7 +57,7 @@ export function normalizeWarning(args) {
     .trim()
 }
 
-function printIssueSummary(scanIssues) {
+export function printIssueSummary(scanIssues) {
   if (scanIssues.length === 0) return
 
   console.log()
@@ -86,7 +86,7 @@ export function filterDuplicatePackages(results) {
     .filter((result) => result.packages.length > 0)
 }
 
-const ALL_SCANNERS = {
+export const ALL_SCANNERS = {
   npm: npmScanner,
   pnpm: pnpmScanner,
   yarn: yarnScanner,

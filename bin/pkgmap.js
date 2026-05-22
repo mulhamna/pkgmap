@@ -2,6 +2,7 @@
 import { program } from 'commander'
 import { createRequire } from 'module'
 import { run } from '../src/index.js'
+import { runAudit } from '../src/audit.js'
 import { runPorts } from '../src/ports.js'
 import { APP_VERSION } from '../src/version.js'
 
@@ -15,6 +16,14 @@ program
   .option('-e, --export', 'export results to pkgmap-export.json')
   .option('-j, --json', 'print results as JSON to stdout')
   .action(run)
+
+program
+  .command('audit')
+  .description('check installed packages against known vulnerability advisories')
+  .option('-m, --manager <name>', 'audit only a specific package manager')
+  .option('-p, --package <name>', 'audit only packages matching this name')
+  .option('-j, --json', 'print audit results as JSON to stdout')
+  .action(runAudit)
 
 program
   .command('ports')
