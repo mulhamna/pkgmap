@@ -100,6 +100,12 @@ test('formatAuditStatus summarizes vulnerability severity counts', () => {
   assert.equal(status, 'critical:1, high:2')
 })
 
+test('formatAuditStatus falls back to advisory when severity is missing', () => {
+  const status = formatAuditStatus([{ id: 'GHSA-demo' }])
+
+  assert.equal(status, 'advisory:1')
+})
+
 test('getAuditEcosystem maps supported managers', () => {
   assert.equal(getAuditEcosystem('npm'), 'npm')
   assert.equal(getAuditEcosystem('cargo'), 'crates.io')
