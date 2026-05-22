@@ -23,7 +23,7 @@ program
   .option('-m, --manager <name>', 'audit only a specific package manager')
   .option('-p, --package <name>', 'audit only packages matching this name')
   .option('-j, --json', 'print audit results as JSON to stdout')
-  .action(runAudit)
+  .action((...args) => runAudit(args.at(-1)))
 
 program
   .command('ports')
@@ -32,6 +32,6 @@ program
   .option('-k, --kill <port-or-pid>', 'terminate the process listening on a port (or matching a PID)')
   .option('-f, --force', 'use SIGKILL instead of SIGTERM when used with --kill')
   .option('-c, --check', 'show only orphan or zombie listening ports')
-  .action(runPorts)
+  .action((...args) => runPorts(args.at(-1)))
 
 program.parse()

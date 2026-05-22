@@ -30,53 +30,51 @@ export function getAuditEcosystem(manager) {
   return AUDIT_ECOSYSTEMS[manager] || null
 }
 
+function extractSeverityText(vuln) {
+  const osvScores = Array.isArray(vuln?.severity)
+    ? vuln.severity.map((entry) => String(entry?.score || ''))
+    : []
+  const aliases = [
+    vuln?.database_specific?.severity,
+    vuln?.ecosystem_specific?.severity,
+    vuln?.severity,
+  ]
+    .flat()
+    .map((value) => String(value || ''))
+
+  return [...osvScores, ...aliases].join(' ').toUpperCase()
+}
+
 export function formatAuditStatus(vulns) {
   if (!Array.isArray(vulns) || vulns.length === 0) return 'ok'
 
-  const counts = { critical: 0, high: 0, medium: 0, low: 0, unknown: 0 }
+  const counts = { critical: 0, high: 0, medium: 0, low: 0, advisory: 0 }
 
   for (const vuln of vulns) {
-    const severities = Array.isArray(vuln?.severity) ? vuln.severity : []
-    const level = severities
-      .map((entry) => String(entry?.score || '').toUpperCase())
-      .find((score) => score.includes('CRITICAL'))
-      ? 'critical'
-      : severities
-            .map((entry) => String(entry?.score || '').toUpperCase())
-            .find((score) => score.includes('HIGH'))
-        ? 'high'
-        : severities
-              .map((entry) => String(entry?.score || '').toUpperCase())
-              .find((score) => score.includes('MEDIUM'))
-          ? 'medium'
-          : severities
-                .map((entry) => String(entry?.score || '').toUpperCase())
-                .find((score) => score.includes('LOW'))
-            ? 'low'
-            : 'unknown'
+    const severityText = extractSeverityText(vuln)
 
-    counts[level] += 1
+    if (severityText.includes('CRITICAL')) counts.critical += 1
+    else if (severityText.includes('HIGH')) counts.high += 1
+    else if (severityText.includes('MEDIUM') || severityText.includes('MODERATE'))
+      counts.medium += 1
+    else if (severityText.includes('LOW')) counts.low += 1
+    else counts.advisory += 1
   }
 
-  const parts = ['critical', 'high', 'medium', 'low']
+  const parts = ['critical', 'high', 'medium', 'low', 'advisory']
     .filter((level) => counts[level] > 0)
     .map((level) => `${level}:${counts[level]}`)
-
-  if (counts.unknown > 0 || parts.length === 0) {
-    parts.push(`unknown:${counts.unknown || vulns.length}`)
-  }
 
   return parts.join(', ')
 }
 
 function colorStatus(status) {
   if (status === 'ok') return chalk.green(status)
-  if (status === 'unsupported') return chalk.dim(status)
   if (status === 'error') return chalk.red(status)
-  if (status.startsWith('critical:')) return chalk.red(status)
-  if (status.includes('critical:')) return chalk.red(status)
+  if (status.startsWith('critical:') || status.includes('critical:')) return chalk.red(status)
   if (status.includes('high:')) return chalk.yellow(status)
-  return chalk.magenta(status)
+  if (status.includes('medium:') || status.includes('advisory:')) return chalk.magenta(status)
+  return chalk.cyan(status)
 }
 
 function renderAuditSummary(results) {
@@ -124,6 +122,20 @@ function renderAuditResults(results) {
   console.log()
 }
 
+function getCliOptionValue(flags) {
+  for (let index = 0; index < process.argv.length; index += 1) {
+    const token = process.argv[index]
+    if (!flags.includes(token)) continue
+    return process.argv[index + 1]
+  }
+
+  return undefined
+}
+
+function hasCliFlag(flags) {
+  return process.argv.some((token) => flags.includes(token))
+}
+
 function chunk(items, size) {
   const batches = []
   for (let index = 0; index < items.length; index += size) {
@@ -149,14 +161,7 @@ async function queryOsvBatch(queries) {
 
 async function auditPackages(manager, packages) {
   const ecosystem = getAuditEcosystem(manager)
-  if (!ecosystem) {
-    return packages.map((pkg) => ({
-      manager,
-      package: pkg.name,
-      version: pkg.version,
-      status: 'unsupported',
-    }))
-  }
+  if (!ecosystem) return []
 
   const queries = packages.map((pkg) => ({
     package: { ecosystem, name: pkg.name },
@@ -187,9 +192,18 @@ async function auditPackages(manager, packages) {
 
 export async function runAudit(options) {
   const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
-  const filterManager = resolvedOptions?.manager?.toLowerCase()
-  const packageFilter = resolvedOptions?.package?.toLowerCase()
-  const doJson = Boolean(resolvedOptions?.json || options?.parent?.opts?.().json)
+  const parentOptions = options?.parent?.opts?.() || {}
+  const filterManager = (
+    resolvedOptions?.manager ||
+    parentOptions.manager ||
+    getCliOptionValue(['--manager', '-m'])
+  )?.toLowerCase()
+  const packageFilter = (
+    resolvedOptions?.package || getCliOptionValue(['--package', '-p'])
+  )?.toLowerCase()
+  const doJson = Boolean(
+    resolvedOptions?.json || parentOptions.json || hasCliFlag(['--json', '-j'])
+  )
 
   let scanners = Object.entries(ALL_SCANNERS)
   if (filterManager) {
@@ -202,7 +216,7 @@ export async function runAudit(options) {
     scanners = [[filterManager, selected]]
   }
 
-  const spinner = ora('Checking package audit status...').start()
+  const spinner = doJson ? { stop() {} } : ora('Checking package audit status...').start()
   const scanIssues = []
 
   try {
@@ -227,15 +241,62 @@ export async function runAudit(options) {
       }))
       .filter((result) => result.packages.length > 0)
 
-    if (scanned.length === 0) {
+    const supported = scanned.filter((result) => getAuditEcosystem(result.manager))
+    const unsupported = scanned.filter((result) => !getAuditEcosystem(result.manager))
+
+    if (filterManager && supported.length === 0 && unsupported.length > 0) {
       spinner.stop()
+
+      const payload = {
+        generatedAt: new Date().toISOString(),
+        results: [],
+        warnings: [
+          {
+            manager: filterManager,
+            message: 'audit not supported yet, skipped.',
+            level: 'warning',
+          },
+        ],
+      }
+
+      if (doJson) {
+        console.log(JSON.stringify(payload, null, 2))
+        return
+      }
+
+      console.log(chalk.yellow(`Audit is not supported for "${filterManager}" yet.`))
+      return
+    }
+
+    for (const result of unsupported) {
+      scanIssues.push({
+        manager: result.manager,
+        message: 'audit not supported yet, skipped.',
+        level: 'warning',
+      })
+    }
+
+    if (supported.length === 0) {
+      spinner.stop()
+
+      const payload = {
+        generatedAt: new Date().toISOString(),
+        results: [],
+        warnings: scanIssues,
+      }
+
+      if (doJson) {
+        console.log(JSON.stringify(payload, null, 2))
+        return
+      }
+
       console.log(chalk.yellow('No matching installed packages found to audit.'))
       printIssueSummary(scanIssues)
       return
     }
 
     const auditResults = []
-    for (const result of scanned) {
+    for (const result of supported) {
       try {
         const rows = await auditPackages(result.manager, result.packages)
         auditResults.push(...rows)
