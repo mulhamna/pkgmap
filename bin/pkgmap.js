@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import { program } from 'commander'
-import { createRequire } from 'module'
 import { run } from '../src/index.js'
 import { runAudit } from '../src/audit.js'
 import { runPorts } from '../src/ports.js'
+import { runUpgrade } from '../src/upgrade.js'
 import { APP_VERSION } from '../src/version.js'
 
 program
@@ -33,5 +33,12 @@ program
   .option('-f, --force', 'use SIGKILL instead of SIGTERM when used with --kill')
   .option('-c, --check', 'show only orphan or zombie listening ports')
   .action((...args) => runPorts(args.at(-1)))
+
+program
+  .command('upgrade')
+  .description('upgrade installed packages across supported package managers')
+  .option('-m, --manager <name>', 'upgrade only one specific package manager')
+  .option('--dry-run', 'print the upgrade command(s) without executing them')
+  .action((...args) => runUpgrade(args.at(-1)))
 
 program.parse()
