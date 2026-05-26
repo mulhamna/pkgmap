@@ -23,8 +23,12 @@ export const UPGRADE_PLANS = {
   },
   gem: { commands: ['gem update'] },
   composer: { commands: ['composer global update'] },
-  gradle: { unsupportedReason: 'cached Gradle artifacts are not safely upgradeable as one global set.' },
-  maven: { unsupportedReason: 'cached Maven artifacts are not safely upgradeable as one global set.' },
+  gradle: {
+    unsupportedReason: 'cached Gradle artifacts are not safely upgradeable as one global set.',
+  },
+  maven: {
+    unsupportedReason: 'cached Maven artifacts are not safely upgradeable as one global set.',
+  },
   nuget: { unsupportedReason: 'global NuGet package cache is not a managed upgrade target.' },
   apt: { commands: ['apt update', 'apt upgrade -y'], elevated: true },
   pacman: { commands: ['pacman -Syu --noconfirm'], elevated: true },
@@ -33,7 +37,9 @@ export const UPGRADE_PLANS = {
   snap: { commands: ['snap refresh'], elevated: true },
   yum: { commands: ['yum update -y'], elevated: true },
   winget: {
-    commands: ['winget upgrade --all --include-unknown --accept-package-agreements --accept-source-agreements'],
+    commands: [
+      'winget upgrade --all --include-unknown --accept-package-agreements --accept-source-agreements',
+    ],
   },
   choco: { commands: ['choco upgrade all -y'] },
   scoop: { commands: ['scoop update *'] },
@@ -42,19 +48,25 @@ export const UPGRADE_PLANS = {
   bun: { commands: ['bun update -g'] },
   pipx: { commands: ['pipx upgrade-all'] },
   poetry: { commands: ['poetry self update'] },
-  helm: { unsupportedReason: 'Helm does not provide a reliable upgrade-all for installed plugins.' },
+  helm: {
+    unsupportedReason: 'Helm does not provide a reliable upgrade-all for installed plugins.',
+  },
   krew: { commands: ['kubectl krew upgrade'] },
   apk: { commands: ['apk update', 'apk upgrade'], elevated: true },
   zypper: { commands: ['zypper update -y'], elevated: true },
   pkg: { commands: ['pkg upgrade -y'], elevated: true },
-  go: { unsupportedReason: 'Go binaries in GOPATH/bin do not have one portable bulk-upgrade command.' },
+  go: {
+    unsupportedReason: 'Go binaries in GOPATH/bin do not have one portable bulk-upgrade command.',
+  },
   conda: { commands: ['conda update --all -y'] },
   mise: { commands: ['mise upgrade'] },
   asdf: { commands: ['asdf plugin update --all && asdf install'] },
   macports: { commands: ['port selfupdate', 'port upgrade outdated'], elevated: true },
   opam: { commands: ['opam update', 'opam upgrade -y'] },
   vcpkg: { commands: ['vcpkg upgrade --no-dry-run'] },
-  volta: { unsupportedReason: 'Volta does not expose a single upgrade-all command for installed tools.' },
+  volta: {
+    unsupportedReason: 'Volta does not expose a single upgrade-all command for installed tools.',
+  },
 }
 
 function getCliOptionValue(flags) {
@@ -74,10 +86,10 @@ function hasCliFlag(flags) {
 function shouldPrefixSudo(plan) {
   return Boolean(
     plan?.elevated &&
-      process.platform !== 'win32' &&
-      typeof process.getuid === 'function' &&
-      process.getuid() !== 0 &&
-      isAvailable('sudo')
+    process.platform !== 'win32' &&
+    typeof process.getuid === 'function' &&
+    process.getuid() !== 0 &&
+    isAvailable('sudo')
   )
 }
 
