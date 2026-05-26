@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.10.1...pkgmap-v1.11.0) (2026-05-26)
+
+
+### Features
+
+* add pkgmap upgrade command ([#66](https://github.com/mulhamna/pkgmap/issues/66)) ([827e797](https://github.com/mulhamna/pkgmap/commit/827e79743f197026e20293fefeb120ad64901ed6))
+
 ## [1.10.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.10.0...pkgmap-v1.10.1) (2026-05-22)
 
 
