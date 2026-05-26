@@ -231,6 +231,15 @@ pkgmap ports --kill 3000 --force
 
 # Show active listening ports as JSON
 pkgmap ports --json
+
+# Upgrade packages across every supported installed manager
+pkgmap upgrade
+
+# Upgrade only one manager
+pkgmap upgrade --manager npm
+
+# Preview the upgrade commands without running them
+pkgmap upgrade --dry-run
 ```
 
 ---
@@ -265,6 +274,19 @@ pkgmap ports --json
 | `pkgmap ports --kill <port-or-pid> --force` | Send SIGKILL instead of SIGTERM |
 | `pkgmap ports --json` | Print active listening TCP ports as JSON |
 
+### Upgrade subcommand
+
+| Command | Description |
+|---------|-------------|
+| `pkgmap upgrade` | Upgrade packages across every supported installed package manager |
+| `pkgmap upgrade --manager npm` | Upgrade packages only for one manager |
+| `pkgmap upgrade --dry-run` | Print the commands that would run without executing them |
+
+> Notes:
+> - `pkgmap upgrade` skips managers that are not accommodated yet.
+> - Currently skipped / not yet accommodated: `gradle`, `maven`, `nuget`, `helm`, `go`, and `volta`.
+> - Some managers may prompt for `sudo` / admin privileges during upgrade.
+
 ---
 
 ## Edge Cases Handled
@@ -278,6 +300,7 @@ pkgmap ports --json
 - Active listening TCP ports via `pkgmap ports`
 - Orphan / zombie listener checks via `pkgmap ports --check`
 - Graceful or forced listener termination via `pkgmap ports --kill <port-or-pid>`
+- Bulk package upgrades via `pkgmap upgrade` for supported managers, with unsupported managers skipped cleanly
 - Windows compatibility, unsupported managers auto-skipped and longer npm timeout applied
 - Arch Linux, Fedora/RHEL, Alpine, openSUSE, FreeBSD, Windows, Nix, Python tooling, Bun, OCaml, MacPorts, vcpkg, and Kubernetes plugin ecosystems are now covered
 

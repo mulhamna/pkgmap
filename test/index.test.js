@@ -6,6 +6,7 @@ import { formatAuditStatus, getAuditEcosystem } from '../src/audit.js'
 import { annotatePorts, filterSuspiciousPorts, terminatePorts } from '../src/ports.js'
 import { parseGoBinaryMetadata } from '../src/scanners/go.js'
 import { parseVcpkgList } from '../src/scanners/vcpkg.js'
+import { buildUpgradeCommand, getUpgradePlan } from '../src/upgrade.js'
 
 test('normalizeWarning flattens mixed warning arguments', () => {
   const error = new Error('kaput')
@@ -169,4 +170,31 @@ test('parseGoBinaryMetadata keeps only binaries with Go build metadata', () => {
   })
 
   assert.equal(parseGoBinaryMetadata('not a Go executable', 'random-tool'), null)
+})
+
+test('getUpgradePlan exposes supported manager upgrade commands', () => {
+  assert.deepEqual(getUpgradePlan('npm'), { commands: ['npm update -g'] })
+  assert.equal(typeof getUpgradePlan('cargo')?.buildCommands, 'function')
+})
+
+test('buildUpgradeCommand joins multi-step plans', () => {
+  assert.equal(
+    buildUpgradeCommand('apt', { commands: ['apt update', 'apt upgrade -y'], elevated: false }),
+    'apt update && apt upgrade -y'
+  )
+})
+
+test('buildUpgradeCommand expands dynamic cargo package installs', () => {
+  assert.equal(
+    buildUpgradeCommand(
+      'cargo',
+      {
+        buildCommands(packages = []) {
+          return packages.map((pkg) => `cargo install ${pkg.name}`)
+        },
+      },
+      [{ name: 'cargo-audit' }, { name: 'bacon' }]
+    ),
+    'cargo install cargo-audit && cargo install bacon'
+  )
 })
