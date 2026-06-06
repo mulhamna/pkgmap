@@ -167,6 +167,7 @@ test('parseGoBinaryMetadata keeps only binaries with Go build metadata', () => {
     name: 'gopls',
     version: 'v0.16.2',
     type: 'binary',
+    auditName: 'golang.org/x/tools/gopls',
   })
 
   assert.equal(parseGoBinaryMetadata('not a Go executable', 'random-tool'), null)

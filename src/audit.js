@@ -190,7 +190,7 @@ async function auditPackages(manager, packages) {
   if (!ecosystem) return []
 
   const queries = packages.map((pkg) => ({
-    package: { ecosystem, name: pkg.name },
+    package: { ecosystem, name: pkg.auditName || pkg.name },
     version: pkg.version,
   }))
 
