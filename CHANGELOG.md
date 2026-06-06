@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.11.0...pkgmap-v1.11.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* preserve audit support for go and conda ([#73](https://github.com/mulhamna/pkgmap/issues/73)) ([377f9d4](https://github.com/mulhamna/pkgmap/commit/377f9d41ca5736f9d81171948742a1528488f412))
+
 ## [1.11.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.10.1...pkgmap-v1.11.0) (2026-05-26)
 
 
