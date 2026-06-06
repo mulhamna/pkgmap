@@ -15,12 +15,14 @@ export function parseGoBinaryMetadata(raw, binaryName) {
   if (!hasGoBuildMetadata) return null
 
   const modLine = lines.find((line) => line.startsWith('mod\t'))
+  const modulePath = modLine?.split(/\s+/)[1] || null
   const version = modLine?.split(/\s+/)[2] || 'installed'
 
   return {
     name: binaryName,
     version,
     type: 'binary',
+    ...(modulePath ? { auditName: modulePath } : {}),
   }
 }
 

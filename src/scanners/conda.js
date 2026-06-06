@@ -20,7 +20,7 @@ export default async function scan() {
       type: 'library',
     }))
 
-    return { manager: cmd, packages }
+    return { manager: 'conda', packages }
   } catch (err) {
     if (err.message?.includes('EACCES') || err.message?.includes('permission')) {
       console.warn(`⚠ ${cmd}: permission denied.`)
