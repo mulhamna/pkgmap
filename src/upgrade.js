@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import ora from 'ora'
 import { spawnSync } from 'child_process'
 
-import { ALL_SCANNERS, printIssueSummary } from './index.js'
+import { scanAll, printIssueSummary } from './index.js'
 import { isAvailable } from './utils.js'
 import { renderBanner, MANAGER_ICONS } from './display/table.js'
 
@@ -161,26 +161,13 @@ function renderUpgradeResults(results) {
 }
 
 async function detectInstalledManagers(filterManager) {
-  let scanners = Object.entries(ALL_SCANNERS)
-
-  if (filterManager) {
-    const selected = ALL_SCANNERS[filterManager]
-    if (!selected) {
-      console.error(chalk.red(`✗ Unknown manager: "${filterManager}"`))
-      console.error(`  Available: ${Object.keys(ALL_SCANNERS).join(', ')}`)
-      process.exit(1)
-    }
-    scanners = [[filterManager, selected]]
-  }
-
   const spinner = ora('Detecting installed package managers...').start()
-  const settled = await Promise.allSettled(scanners.map(([_name, scanFn]) => scanFn()))
+  const { results } = await scanAll(filterManager)
   spinner.stop()
 
-  return settled
-    .map((entry, index) => ({ entry, manager: scanners[index][0] }))
-    .filter(({ entry }) => entry.status === 'fulfilled' && entry.value?.packages?.length > 0)
-    .map(({ entry, manager }) => ({ manager, packages: entry.value.packages }))
+  return results
+    .filter((result) => result.packages?.length > 0)
+    .map((result) => ({ manager: result.manager, packages: result.packages }))
 }
 
 export async function runUpgrade(options) {
