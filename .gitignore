@@ -1,5 +1,6 @@
 # macOS
 .DS_Store
+.claude
 
 # pkgmap export output
 pkgmap-export.json
