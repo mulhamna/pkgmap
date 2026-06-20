@@ -1,32 +1,17 @@
-import { execSync } from 'child_process'
-import { isAvailable } from '../utils.js'
+import { runScanner } from '../utils.js'
 
 export default async function scan() {
-  if (!isAvailable('yarn')) return null
-
-  try {
-    const raw = execSync('yarn global list --depth=0 2>/dev/null', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 10000,
-    }).toString()
-
-    const packages = []
-    const lines = raw.split('\n')
-
-    for (const line of lines) {
-      const match = line.match(/info\s+"([^@]+)@([^"]+)"/) || line.match(/[└├─]+\s+([^@]+)@(\S+)/)
-      if (match) {
-        packages.push({ name: match[1].trim(), version: match[2].trim(), type: 'cli' })
+  return runScanner({
+    manager: 'yarn',
+    bin: 'yarn',
+    command: 'yarn global list --depth=0 2>/dev/null',
+    parse: (raw) => {
+      const packages = []
+      for (const line of raw.split('\n')) {
+        const match = line.match(/info\s+"([^@]+)@([^"]+)"/) || line.match(/[└├─]+\s+([^@]+)@(\S+)/)
+        if (match) packages.push({ name: match[1].trim(), version: match[2].trim(), type: 'cli' })
       }
-    }
-
-    return { manager: 'yarn', packages }
-  } catch (err) {
-    if (err.message?.includes('EACCES') || err.message?.includes('permission')) {
-      console.warn('⚠ yarn: permission denied. Try running with sudo.')
-    } else if (err.signal === 'SIGTERM' || err.code === 'ETIMEDOUT') {
-      console.warn('⚠ yarn: scan timed out, skipping.')
-    }
-    return null
-  }
+      return packages
+    },
+  })
 }
