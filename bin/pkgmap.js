@@ -4,6 +4,7 @@ import { run } from '../src/index.js'
 import { runAudit } from '../src/audit.js'
 import { runPorts } from '../src/ports.js'
 import { runUpgrade } from '../src/upgrade.js'
+import { runNodeVersions } from '../src/node-versions.js'
 import { APP_VERSION } from '../src/version.js'
 
 program
@@ -40,5 +41,12 @@ program
   .option('-m, --manager <name>', 'upgrade only one specific package manager')
   .option('--dry-run', 'print the upgrade command(s) without executing them')
   .action((...args) => runUpgrade(args.at(-1)))
+
+program
+  .command('node-versions')
+  .aliases(['nodes', 'nv'])
+  .description('list global npm packages grouped by installed Node.js versions')
+  .option('-j, --json', 'print results as JSON to stdout')
+  .action((...args) => runNodeVersions(args.at(-1)))
 
 program.parse()
