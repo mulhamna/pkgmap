@@ -164,8 +164,7 @@ function parseMacPorts(raw) {
       const pid = Number(parts[1])
       const protocol = (parts[7] || 'tcp').toLowerCase()
       const name = parts.slice(8).join(' ')
-      const match =
-        name.match(/(.+)->/) || name.match(/(.+)\(LISTEN\)/) || name.match(/(.+)\(LISTEN\)$/)
+      const match = name.match(/(.+)->/) || name.match(/(.+)\(LISTEN\)/)
       const endpoint = (match?.[1] || name).trim()
       const local = splitAddressPort(endpoint)
 

@@ -91,17 +91,12 @@ export function buildUpgradeCommand(manager, plan, packages = []) {
   return commands.map((command) => `${prefix}${command}`).join(' && ')
 }
 
-function summarizeResultBucket(result) {
-  if (result.status === 'success') return 'success'
-  if (result.status === 'failed') return 'failed'
-  return 'skipped'
-}
-
 function renderUpgradeSummary(results) {
   const bucketCounts = new Map()
 
   for (const result of results) {
-    const bucket = summarizeResultBucket(result)
+    const bucket =
+      result.status === 'success' || result.status === 'failed' ? result.status : 'skipped'
     bucketCounts.set(bucket, (bucketCounts.get(bucket) || 0) + 1)
   }
 
