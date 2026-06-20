@@ -4,6 +4,7 @@ import Table from 'cli-table3'
 
 import { renderBanner, MANAGER_ICONS } from './display/table.js'
 import { scanAll, printIssueSummary } from './index.js'
+import { getCliOptionValue, hasCliFlag, optsOf } from './utils.js'
 
 const OSV_QUERY_BATCH_URL = 'https://api.osv.dev/v1/querybatch'
 const BATCH_SIZE = 100
@@ -148,20 +149,6 @@ function renderAuditResults(results) {
   console.log()
 }
 
-function getCliOptionValue(flags) {
-  for (let index = 0; index < process.argv.length; index += 1) {
-    const token = process.argv[index]
-    if (!flags.includes(token)) continue
-    return process.argv[index + 1]
-  }
-
-  return undefined
-}
-
-function hasCliFlag(flags) {
-  return process.argv.some((token) => flags.includes(token))
-}
-
 function chunk(items, size) {
   const batches = []
   for (let index = 0; index < items.length; index += size) {
@@ -217,7 +204,7 @@ async function auditPackages(manager, packages) {
 }
 
 export async function runAudit(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const parentOptions = options?.parent?.opts?.() || {}
   const filterManager = (
     resolvedOptions?.manager ||

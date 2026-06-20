@@ -4,7 +4,7 @@ import { execSync } from 'child_process'
 
 import { renderBanner } from './display/table.js'
 import { renderPorts } from './display/ports.js'
-import { isAvailable } from './utils.js'
+import { isAvailable, optsOf } from './utils.js'
 
 function parsePsRow(raw) {
   const trimmed = raw.trim()
@@ -279,7 +279,7 @@ function getActivePorts() {
 }
 
 export async function runPorts(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const doJson = Boolean(
     resolvedOptions?.json ||
     options?.parent?.opts?.().json ||

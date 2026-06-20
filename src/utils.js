@@ -10,6 +10,23 @@ export function isAvailable(cmd) {
   }
 }
 
+// Read a flag value straight from argv — commander fallback for nested commands.
+export function getCliOptionValue(flags) {
+  for (let index = 0; index < process.argv.length; index += 1) {
+    if (flags.includes(process.argv[index])) return process.argv[index + 1]
+  }
+  return undefined
+}
+
+export function hasCliFlag(flags) {
+  return process.argv.some((token) => flags.includes(token))
+}
+
+// Commander hands the action a Command instance; direct calls pass plain options.
+export function optsOf(options) {
+  return typeof options?.opts === 'function' ? options.opts() : options
+}
+
 // Shared scanner shell: resolve the binary, run one command, parse stdout.
 // Keeps the permission/timeout warning contract used by every scanner.
 export async function runScanner({

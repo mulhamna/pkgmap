@@ -41,6 +41,7 @@ import macportsScanner from './scanners/macports.js'
 import opamScanner from './scanners/opam.js'
 import vcpkgScanner from './scanners/vcpkg.js'
 import { renderAll } from './display/table.js'
+import { optsOf } from './utils.js'
 
 export function normalizeWarning(args) {
   return args
@@ -164,7 +165,7 @@ export async function scanAll(filterManager) {
 }
 
 export async function run(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const {
     manager: filterManager,
     search: searchTerm,

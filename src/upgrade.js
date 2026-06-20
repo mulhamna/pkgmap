@@ -3,7 +3,7 @@ import ora from 'ora'
 import { spawnSync } from 'child_process'
 
 import { scanAll, printIssueSummary } from './index.js'
-import { isAvailable } from './utils.js'
+import { isAvailable, getCliOptionValue, hasCliFlag, optsOf } from './utils.js'
 import { renderBanner, MANAGER_ICONS } from './display/table.js'
 
 export const UPGRADE_PLANS = {
@@ -67,20 +67,6 @@ export const UPGRADE_PLANS = {
   volta: {
     unsupportedReason: 'Volta does not expose a single upgrade-all command for installed tools.',
   },
-}
-
-function getCliOptionValue(flags) {
-  for (let index = 0; index < process.argv.length; index += 1) {
-    const token = process.argv[index]
-    if (!flags.includes(token)) continue
-    return process.argv[index + 1]
-  }
-
-  return undefined
-}
-
-function hasCliFlag(flags) {
-  return process.argv.some((token) => flags.includes(token))
 }
 
 function shouldPrefixSudo(plan) {
@@ -171,7 +157,7 @@ async function detectInstalledManagers(filterManager) {
 }
 
 export async function runUpgrade(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const parentOptions = options?.parent?.opts?.() || {}
   const filterManager = (
     resolvedOptions?.manager ||
