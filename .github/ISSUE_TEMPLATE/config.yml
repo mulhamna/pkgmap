@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: npm package
+    url: https://www.npmjs.com/package/@mulham28/pkgmap
+    about: Install instructions and published versions.
+  - name: Usage docs
+    url: https://github.com/mulhamna/pkgmap#readme
+    about: Read the README before opening an issue.
