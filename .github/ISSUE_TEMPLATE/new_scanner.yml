@@ -1,0 +1,51 @@
+name: New scanner request
+description: Request support for a new package manager
+title: "feat: add <name> scanner"
+labels: ["enhancement", "scanner"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Each scanner lives in `src/scanners/<name>.js` and exports a default async
+        function returning `{ manager, packages: [{ name, version }] }`.
+  - type: input
+    id: name
+    attributes:
+      label: Package manager name
+      placeholder: deno / conda / apt
+    validations:
+      required: true
+  - type: input
+    id: list-command
+    attributes:
+      label: Command to list installed packages
+      placeholder: deno list --json
+    validations:
+      required: true
+  - type: input
+    id: check-binary
+    attributes:
+      label: Binary to check availability
+      description: Used with `which` / `where` before running.
+      placeholder: deno
+  - type: dropdown
+    id: json
+    attributes:
+      label: Does the list command support JSON output?
+      options:
+        - "yes"
+        - "no — text only"
+        - unknown
+    validations:
+      required: true
+  - type: input
+    id: platforms
+    attributes:
+      label: Supported platforms
+      placeholder: macOS, Linux, Windows
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to submit a PR for this scanner
