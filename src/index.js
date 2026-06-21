@@ -41,6 +41,7 @@ import macportsScanner from './scanners/macports.js'
 import opamScanner from './scanners/opam.js'
 import vcpkgScanner from './scanners/vcpkg.js'
 import { renderAll } from './display/table.js'
+import { optsOf } from './utils.js'
 
 export function normalizeWarning(args) {
   return args
@@ -127,8 +128,44 @@ export const ALL_SCANNERS = {
   vcpkg: vcpkgScanner,
 }
 
+// Resolve the scanner list for an optional manager filter; exit on unknown name.
+export function resolveScanners(filterManager) {
+  if (!filterManager) return Object.entries(ALL_SCANNERS)
+
+  const key = filterManager.toLowerCase()
+  const selected = ALL_SCANNERS[key]
+  if (!selected) {
+    console.error(chalk.red(`✗ Unknown manager: "${filterManager}"`))
+    console.error(`  Available: ${Object.keys(ALL_SCANNERS).join(', ')}`)
+    process.exit(1)
+  }
+  return [[key, selected]]
+}
+
+// Run every selected scanner in parallel; split into results and error issues.
+export async function scanAll(filterManager) {
+  const scanners = resolveScanners(filterManager)
+  const settled = await Promise.allSettled(scanners.map(([, scanFn]) => scanFn()))
+
+  const results = []
+  const issues = []
+  settled.forEach((entry, index) => {
+    if (entry.status === 'fulfilled') {
+      if (entry.value) results.push(entry.value)
+    } else {
+      issues.push({
+        manager: scanners[index][0],
+        message: entry.reason?.message || 'scan failed unexpectedly',
+        level: 'error',
+      })
+    }
+  })
+
+  return { results, issues }
+}
+
 export async function run(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const {
     manager: filterManager,
     search: searchTerm,
@@ -136,18 +173,6 @@ export async function run(options) {
     export: doExport,
     json: doJson,
   } = resolvedOptions
-
-  let scanners = Object.entries(ALL_SCANNERS)
-
-  if (filterManager) {
-    const selected = ALL_SCANNERS[filterManager.toLowerCase()]
-    if (!selected) {
-      console.error(chalk.red(`✗ Unknown manager: "${filterManager}"`))
-      console.error(`  Available: ${Object.keys(ALL_SCANNERS).join(', ')}`)
-      process.exit(1)
-    }
-    scanners = [[filterManager.toLowerCase(), selected]]
-  }
 
   const spinner = ora('Scanning package managers...').start()
 
@@ -164,24 +189,14 @@ export async function run(options) {
     })
   }
 
-  const settled = await Promise.allSettled(scanners.map(([_name, scanFn]) => scanFn()))
+  const { results: scanned, issues } = await scanAll(filterManager)
 
   console.warn = originalWarn
   spinner.stop()
 
-  settled.forEach((entry, index) => {
-    if (entry.status === 'rejected') {
-      scanIssues.push({
-        manager: scanners[index][0],
-        message: entry.reason?.message || 'scan failed unexpectedly',
-        level: 'error',
-      })
-    }
-  })
+  scanIssues.push(...issues)
 
-  let results = settled
-    .map((s) => (s.status === 'fulfilled' ? s.value : null))
-    .filter((r) => r && r.packages.length > 0)
+  let results = scanned.filter((r) => r && r.packages.length > 0)
 
   if (results.length === 0) {
     console.log(chalk.yellow('No package managers found or all scans failed.'))

@@ -4,7 +4,7 @@ import { execSync } from 'child_process'
 
 import { renderBanner } from './display/table.js'
 import { renderPorts } from './display/ports.js'
-import { isAvailable } from './utils.js'
+import { isAvailable, optsOf } from './utils.js'
 
 function parsePsRow(raw) {
   const trimmed = raw.trim()
@@ -164,8 +164,7 @@ function parseMacPorts(raw) {
       const pid = Number(parts[1])
       const protocol = (parts[7] || 'tcp').toLowerCase()
       const name = parts.slice(8).join(' ')
-      const match =
-        name.match(/(.+)->/) || name.match(/(.+)\(LISTEN\)/) || name.match(/(.+)\(LISTEN\)$/)
+      const match = name.match(/(.+)->/) || name.match(/(.+)\(LISTEN\)/)
       const endpoint = (match?.[1] || name).trim()
       const local = splitAddressPort(endpoint)
 
@@ -279,7 +278,7 @@ function getActivePorts() {
 }
 
 export async function runPorts(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const doJson = Boolean(
     resolvedOptions?.json ||
     options?.parent?.opts?.().json ||

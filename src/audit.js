@@ -3,7 +3,8 @@ import chalk from 'chalk'
 import Table from 'cli-table3'
 
 import { renderBanner, MANAGER_ICONS } from './display/table.js'
-import { ALL_SCANNERS, printIssueSummary } from './index.js'
+import { scanAll, printIssueSummary } from './index.js'
+import { getCliOptionValue, hasCliFlag, optsOf } from './utils.js'
 
 const OSV_QUERY_BATCH_URL = 'https://api.osv.dev/v1/querybatch'
 const BATCH_SIZE = 100
@@ -148,20 +149,6 @@ function renderAuditResults(results) {
   console.log()
 }
 
-function getCliOptionValue(flags) {
-  for (let index = 0; index < process.argv.length; index += 1) {
-    const token = process.argv[index]
-    if (!flags.includes(token)) continue
-    return process.argv[index + 1]
-  }
-
-  return undefined
-}
-
-function hasCliFlag(flags) {
-  return process.argv.some((token) => flags.includes(token))
-}
-
 function chunk(items, size) {
   const batches = []
   for (let index = 0; index < items.length; index += size) {
@@ -217,7 +204,7 @@ async function auditPackages(manager, packages) {
 }
 
 export async function runAudit(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const parentOptions = options?.parent?.opts?.() || {}
   const filterManager = (
     resolvedOptions?.manager ||
@@ -231,34 +218,14 @@ export async function runAudit(options) {
     resolvedOptions?.json || parentOptions.json || hasCliFlag(['--json', '-j'])
   )
 
-  let scanners = Object.entries(ALL_SCANNERS)
-  if (filterManager) {
-    const selected = ALL_SCANNERS[filterManager]
-    if (!selected) {
-      console.error(chalk.red(`✗ Unknown manager: "${filterManager}"`))
-      console.error(`  Available: ${Object.keys(ALL_SCANNERS).join(', ')}`)
-      process.exit(1)
-    }
-    scanners = [[filterManager, selected]]
-  }
-
   const spinner = doJson ? { stop() {} } : ora('Checking package audit status...').start()
   const scanIssues = []
 
   try {
-    const settled = await Promise.allSettled(scanners.map(([_name, scanFn]) => scanFn()))
+    const { results: scannedRaw, issues } = await scanAll(filterManager)
+    scanIssues.push(...issues)
 
-    const scanned = settled
-      .map((entry, index) => {
-        if (entry.status === 'fulfilled') return entry.value
-        scanIssues.push({
-          manager: scanners[index][0],
-          message: entry.reason?.message || 'scan failed unexpectedly',
-          level: 'error',
-        })
-        return null
-      })
-      .filter(Boolean)
+    const scanned = scannedRaw
       .map((result) => ({
         ...result,
         packages: packageFilter

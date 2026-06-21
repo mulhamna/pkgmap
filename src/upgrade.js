@@ -2,8 +2,8 @@ import chalk from 'chalk'
 import ora from 'ora'
 import { spawnSync } from 'child_process'
 
-import { ALL_SCANNERS, printIssueSummary } from './index.js'
-import { isAvailable } from './utils.js'
+import { scanAll, printIssueSummary } from './index.js'
+import { isAvailable, getCliOptionValue, hasCliFlag, optsOf } from './utils.js'
 import { renderBanner, MANAGER_ICONS } from './display/table.js'
 
 export const UPGRADE_PLANS = {
@@ -69,20 +69,6 @@ export const UPGRADE_PLANS = {
   },
 }
 
-function getCliOptionValue(flags) {
-  for (let index = 0; index < process.argv.length; index += 1) {
-    const token = process.argv[index]
-    if (!flags.includes(token)) continue
-    return process.argv[index + 1]
-  }
-
-  return undefined
-}
-
-function hasCliFlag(flags) {
-  return process.argv.some((token) => flags.includes(token))
-}
-
 function shouldPrefixSudo(plan) {
   return Boolean(
     plan?.elevated &&
@@ -105,17 +91,12 @@ export function buildUpgradeCommand(manager, plan, packages = []) {
   return commands.map((command) => `${prefix}${command}`).join(' && ')
 }
 
-function summarizeResultBucket(result) {
-  if (result.status === 'success') return 'success'
-  if (result.status === 'failed') return 'failed'
-  return 'skipped'
-}
-
 function renderUpgradeSummary(results) {
   const bucketCounts = new Map()
 
   for (const result of results) {
-    const bucket = summarizeResultBucket(result)
+    const bucket =
+      result.status === 'success' || result.status === 'failed' ? result.status : 'skipped'
     bucketCounts.set(bucket, (bucketCounts.get(bucket) || 0) + 1)
   }
 
@@ -161,30 +142,17 @@ function renderUpgradeResults(results) {
 }
 
 async function detectInstalledManagers(filterManager) {
-  let scanners = Object.entries(ALL_SCANNERS)
-
-  if (filterManager) {
-    const selected = ALL_SCANNERS[filterManager]
-    if (!selected) {
-      console.error(chalk.red(`✗ Unknown manager: "${filterManager}"`))
-      console.error(`  Available: ${Object.keys(ALL_SCANNERS).join(', ')}`)
-      process.exit(1)
-    }
-    scanners = [[filterManager, selected]]
-  }
-
   const spinner = ora('Detecting installed package managers...').start()
-  const settled = await Promise.allSettled(scanners.map(([_name, scanFn]) => scanFn()))
+  const { results } = await scanAll(filterManager)
   spinner.stop()
 
-  return settled
-    .map((entry, index) => ({ entry, manager: scanners[index][0] }))
-    .filter(({ entry }) => entry.status === 'fulfilled' && entry.value?.packages?.length > 0)
-    .map(({ entry, manager }) => ({ manager, packages: entry.value.packages }))
+  return results
+    .filter((result) => result.packages?.length > 0)
+    .map((result) => ({ manager: result.manager, packages: result.packages }))
 }
 
 export async function runUpgrade(options) {
-  const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
+  const resolvedOptions = optsOf(options)
   const parentOptions = options?.parent?.opts?.() || {}
   const filterManager = (
     resolvedOptions?.manager ||
