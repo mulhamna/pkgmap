@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.11.1...pkgmap-v1.12.0) (2026-06-21)
+
+
+### Features
+
+* list global npm packages per Node.js version ([#77](https://github.com/mulhamna/pkgmap/issues/77)) ([#80](https://github.com/mulhamna/pkgmap/issues/80)) ([d0a4210](https://github.com/mulhamna/pkgmap/commit/d0a42107ba97e3da1e64f8787a5f49c14b998992))
+
 ## [1.11.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.11.0...pkgmap-v1.11.1) (2026-06-06)
 
 
