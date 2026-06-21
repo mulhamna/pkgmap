@@ -7,6 +7,7 @@ import { annotatePorts, filterSuspiciousPorts, terminatePorts } from '../src/por
 import { parseGoBinaryMetadata } from '../src/scanners/go.js'
 import { parseVcpkgList } from '../src/scanners/vcpkg.js'
 import { buildUpgradeCommand, getUpgradePlan } from '../src/upgrade.js'
+import { readGlobalPackages } from '../src/node-versions.js'
 
 test('normalizeWarning flattens mixed warning arguments', () => {
   const error = new Error('kaput')
@@ -198,4 +199,29 @@ test('buildUpgradeCommand expands dynamic cargo package installs', () => {
     ),
     'cargo install cargo-audit && cargo install bacon'
   )
+})
+
+test('readGlobalPackages expands scopes and skips non-package entries', () => {
+  const tree = {
+    '/mods': ['typescript', 'eslint', '@scope', '.bin', 'npm'],
+    '/mods/@scope': ['cli', '.cache'],
+  }
+  const dirent = (name) => ({ name, isDirectory: () => true })
+  const readdir = (dir) => (tree[dir] || []).map(dirent)
+
+  const versions = {
+    '/mods/typescript/package.json': { version: '5.4.2' },
+    '/mods/@scope/cli/package.json': { version: '1.0.0' },
+  }
+  const readJson = (path) => versions[path] || null
+
+  assert.deepEqual(readGlobalPackages('/mods', { readdir, readJson }), [
+    { name: '@scope/cli', version: '1.0.0' },
+    { name: 'eslint', version: 'unknown' },
+    { name: 'typescript', version: '5.4.2' },
+  ])
+})
+
+test('readGlobalPackages returns empty for missing or empty directories', () => {
+  assert.deepEqual(readGlobalPackages('/nope', { readdir: () => [], readJson: () => null }), [])
 })

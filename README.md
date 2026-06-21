@@ -240,6 +240,12 @@ pkgmap upgrade --manager npm
 
 # Preview the upgrade commands without running them
 pkgmap upgrade --dry-run
+
+# List global npm packages grouped by installed Node.js version
+pkgmap node-versions
+
+# JSON output (aliases: nodes, nv)
+pkgmap nv --json
 ```
 
 ---
@@ -281,6 +287,17 @@ pkgmap upgrade --dry-run
 | `pkgmap upgrade` | Upgrade packages across every supported installed package manager |
 | `pkgmap upgrade --manager npm` | Upgrade packages only for one manager |
 | `pkgmap upgrade --dry-run` | Print the commands that would run without executing them |
+
+### Node versions subcommand
+
+| Command | Description |
+|---------|-------------|
+| `pkgmap node-versions` | List global npm packages grouped by installed Node.js version |
+| `pkgmap nodes` / `pkgmap nv` | Aliases for `node-versions` |
+| `pkgmap node-versions --json` | Print results as JSON |
+
+> Detects Node.js installs from `nvm`, `nvm-windows`, `fnm`, `volta`, `n`, `asdf`, `mise`, and `nodenv`.
+> Use it to track down "command not found" after switching Node versions.
 
 > Notes:
 > - `pkgmap upgrade` skips managers that are not accommodated yet.
