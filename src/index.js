@@ -1,45 +1,7 @@
 import ora from 'ora'
 import chalk from 'chalk'
-import { writeFileSync } from 'fs'
+import { writeFileSync, readdirSync } from 'fs'
 
-import npmScanner from './scanners/npm.js'
-import pnpmScanner from './scanners/pnpm.js'
-import yarnScanner from './scanners/yarn.js'
-import brewScanner from './scanners/brew.js'
-import voltaScanner from './scanners/volta.js'
-import pipScanner from './scanners/pip.js'
-import cargoScanner from './scanners/cargo.js'
-import gemScanner from './scanners/gem.js'
-import composerScanner from './scanners/composer.js'
-import gradleScanner from './scanners/gradle.js'
-import mavenScanner from './scanners/maven.js'
-import nugetScanner from './scanners/nuget.js'
-import aptScanner from './scanners/apt.js'
-import pacmanScanner from './scanners/pacman.js'
-import dnfScanner from './scanners/dnf.js'
-import flatpakScanner from './scanners/flatpak.js'
-import snapScanner from './scanners/snap.js'
-import yumScanner from './scanners/yum.js'
-import wingetScanner from './scanners/winget.js'
-import chocoScanner from './scanners/choco.js'
-import scoopScanner from './scanners/scoop.js'
-import nixScanner from './scanners/nix.js'
-import uvScanner from './scanners/uv.js'
-import bunScanner from './scanners/bun.js'
-import pipxScanner from './scanners/pipx.js'
-import poetryScanner from './scanners/poetry.js'
-import helmScanner from './scanners/helm.js'
-import krewScanner from './scanners/krew.js'
-import apkScanner from './scanners/apk.js'
-import zypperScanner from './scanners/zypper.js'
-import pkgScanner from './scanners/pkg.js'
-import goScanner from './scanners/go.js'
-import condaScanner from './scanners/conda.js'
-import miseScanner from './scanners/mise.js'
-import asdfScanner from './scanners/asdf.js'
-import macportsScanner from './scanners/macports.js'
-import opamScanner from './scanners/opam.js'
-import vcpkgScanner from './scanners/vcpkg.js'
 import { renderAll } from './display/table.js'
 import { optsOf } from './utils.js'
 
@@ -87,46 +49,17 @@ export function filterDuplicatePackages(results) {
     .filter((result) => result.packages.length > 0)
 }
 
-export const ALL_SCANNERS = {
-  npm: npmScanner,
-  pnpm: pnpmScanner,
-  yarn: yarnScanner,
-  brew: brewScanner,
-  volta: voltaScanner,
-  pip: pipScanner,
-  cargo: cargoScanner,
-  gem: gemScanner,
-  composer: composerScanner,
-  gradle: gradleScanner,
-  maven: mavenScanner,
-  nuget: nugetScanner,
-  apt: aptScanner,
-  pacman: pacmanScanner,
-  dnf: dnfScanner,
-  flatpak: flatpakScanner,
-  snap: snapScanner,
-  yum: yumScanner,
-  winget: wingetScanner,
-  choco: chocoScanner,
-  scoop: scoopScanner,
-  nix: nixScanner,
-  uv: uvScanner,
-  bun: bunScanner,
-  pipx: pipxScanner,
-  poetry: poetryScanner,
-  helm: helmScanner,
-  krew: krewScanner,
-  apk: apkScanner,
-  zypper: zypperScanner,
-  pkg: pkgScanner,
-  go: goScanner,
-  conda: condaScanner,
-  mise: miseScanner,
-  asdf: asdfScanner,
-  macports: macportsScanner,
-  opam: opamScanner,
-  vcpkg: vcpkgScanner,
-}
+// Auto-load every scanner in ./scanners keyed by filename (filename === manager).
+// Drop a new file in that dir and it registers itself — no edit here needed.
+const scannerDir = new URL('./scanners/', import.meta.url)
+export const ALL_SCANNERS = Object.fromEntries(
+  await Promise.all(
+    readdirSync(scannerDir)
+      .filter((file) => file.endsWith('.js'))
+      .sort()
+      .map(async (file) => [file.slice(0, -3), (await import(`./scanners/${file}`)).default])
+  )
+)
 
 // Resolve the scanner list for an optional manager filter; exit on unknown name.
 export function resolveScanners(filterManager) {
