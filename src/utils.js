@@ -27,6 +27,19 @@ export function optsOf(options) {
   return typeof options?.opts === 'function' ? options.opts() : options
 }
 
+// Parse tab-separated `name\tversion` lines into system package records.
+// Shared by the dpkg/rpm-style scanners (apt, dnf, ...).
+export function parseTabbed(raw) {
+  return raw
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => {
+      const [name, version] = line.split('\t')
+      return { name: name?.trim(), version: version?.trim() || 'unknown', type: 'system' }
+    })
+    .filter((pkg) => pkg.name)
+}
+
 // Shared scanner shell: resolve the binary, run one command, parse stdout.
 // Keeps the permission/timeout warning contract used by every scanner.
 export async function runScanner({
