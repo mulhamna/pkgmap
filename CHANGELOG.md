@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.12.0...pkgmap-v1.12.1) (2026-07-21)
+
+
+### Bug Fixes
+
+* **deps:** roll up dependabot bumps and slim scanner registry ([#93](https://github.com/mulhamna/pkgmap/issues/93)) ([46b473d](https://github.com/mulhamna/pkgmap/commit/46b473dd75e569c33062d9d832007f5f6a6d573a))
+
 ## [1.12.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.11.1...pkgmap-v1.12.0) (2026-06-21)
 
 
