@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.2](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.12.1...pkgmap-v1.12.2) (2026-07-27)
+
+
+### Bug Fixes
+
+* refresh lockfile for audit ([#99](https://github.com/mulhamna/pkgmap/issues/99)) ([b3d7e8b](https://github.com/mulhamna/pkgmap/commit/b3d7e8bd949d3e0b5fbe1f13731d18fd26c5d1bd))
+
 ## [1.12.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.12.0...pkgmap-v1.12.1) (2026-07-21)
 
 
