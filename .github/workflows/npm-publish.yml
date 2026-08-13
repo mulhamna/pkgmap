@@ -16,6 +16,9 @@ jobs:
   publish:
     name: Publish package from GitHub release
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - name: Checkout
@@ -50,8 +53,6 @@ jobs:
 
       - name: Publish to npm (skip if already published)
         shell: bash
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           PUBLISHED=$(npm view @mulham28/pkgmap@$PACKAGE_VERSION version 2>/dev/null || true)
@@ -62,4 +63,4 @@ jobs:
           fi
 
           echo "Publishing version $PACKAGE_VERSION..."
-          npm publish --access public
+          npm publish --access public --provenance
