@@ -59,7 +59,7 @@ pkgmap/
   "type": "module",
   "description": "One command to see everything installed on your machine",
   "engines": {
-    "node": ">=20.0.0"
+    "bun": ">=1.1.0"
   },
   "bin": {
     "pkgmap": "bin/pkgmap.js"
@@ -68,8 +68,8 @@ pkgmap/
     "lint": "eslint src/",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
-    "release:check": "node scripts/sync-version-check.mjs",
-    "start": "node bin/pkgmap.js"
+    "release:check": "bun scripts/sync-version-check.mjs",
+    "start": "bun bin/pkgmap.js"
   }
 }
 ```
@@ -127,16 +127,8 @@ Setiap scanner harus handle kondisi berikut:
 
 ### 1. Package manager tidak terinstall
 ```js
-// Cek dulu apakah binary tersedia sebelum eksekusi
-import { execSync } from 'child_process'
-
 function isAvailable(cmd) {
-  try {
-    execSync(`which ${cmd}`, { stdio: 'ignore' })
-    return true
-  } catch {
-    return false
-  }
+  return Boolean(Bun.which(cmd))
 }
 ```
 Kalau tidak tersedia → return `null`, orchestrator akan skip dan tampilkan warning ringan.
@@ -147,7 +139,7 @@ Kalau tidak tersedia → return `null`, orchestrator akan skip dan tampilkan war
 - Beberapa scanner (brew, gem) mungkin tidak tersedia di Windows — skip gracefully
 
 ### 3. Permission error
-- Wrap semua `execSync` / `exec` dalam try-catch
+- Wrap semua `Bun.spawnSync` dalam try-catch
 - Kalau error karena permission → tampilkan pesan: `⚠ <manager>: permission denied. Try running with sudo.`
 
 ### 4. Slow scanner (brew, cargo)
@@ -214,7 +206,7 @@ const results = await Promise.allSettled(scanners.map(s => s()))
 ## bin/pkgmap.js
 
 ```js
-#!/usr/bin/env node
+#!/usr/bin/env bun
 import { program } from 'commander'
 import { run } from '../src/index.js'
 import { APP_VERSION } from '../src/version.js'
@@ -241,10 +233,10 @@ git clone https://github.com/<username>/pkgmap.git
 cd pkgmap
 
 # Install dependencies
-npm install
+bun install
 
 # Link secara lokal biar bisa dipanggil sebagai CLI
-npm link
+bun link
 
 # Jalankan
 pkgmap
@@ -256,14 +248,14 @@ pkgmap
 
 ```bash
 # Pastikan sudah login
-npm login
+bunx npm login
 
 # Publish
-npm publish --access public
+bunx npm publish --access public
 ```
 
 Setelah publish ke npm, otomatis bisa diinstall via:
-- `npm install -g @mulham28/pkgmap`
+- `bun add --global @mulham28/pkgmap`
 - `pnpm add -g @mulham28/pkgmap`
 - `yarn global add @mulham28/pkgmap`
 - `volta install @mulham28/pkgmap`

@@ -1,14 +1,15 @@
-import fs from 'node:fs'
-
-const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
-const lock = JSON.parse(fs.readFileSync('package-lock.json', 'utf8'))
+const pkg = await Bun.file('package.json').json()
+const lock = await Bun.file('bun.lock').text()
 
 const pkgVersion = pkg.version
 const mismatches = []
 
-if (lock.version !== pkgVersion) mismatches.push(`package-lock.json version=${lock.version}`)
-if (lock.packages?.['']?.version !== pkgVersion) {
-  mismatches.push(`package-lock.json packages[""].version=${lock.packages?.['']?.version}`)
+// Bun lockfiles do not duplicate the package version like npm lockfiles do.
+// They are JSONC rather than strict JSON, so verify the root workspace name
+// from the lockfile text instead of parsing it as JSON.
+const workspaceName = lock.match(/"":\s*\{[\s\S]*?"name":\s*"([^"]+)"/)?.[1]
+if (workspaceName !== pkg.name) {
+  mismatches.push(`bun.lock workspace name=${workspaceName}`)
 }
 
 if (mismatches.length) {

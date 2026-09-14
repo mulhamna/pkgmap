@@ -12,20 +12,21 @@ if [ "$(uname)" = "Darwin" ] && command -v brew >/dev/null 2>&1; then
   exit 0
 fi
 
-# Fallback: npm ecosystem (npm, pnpm, yarn, bun)
-if command -v npm >/dev/null 2>&1; then
+# Bun is the supported runtime and installer.
+if command -v bun >/dev/null 2>&1; then
+  bun add --global "$PACKAGE"
+elif command -v npm >/dev/null 2>&1; then
+  echo "Warning: Bun is recommended; falling back to npm."
   npm install -g "$PACKAGE"
 elif command -v pnpm >/dev/null 2>&1; then
   pnpm add -g "$PACKAGE"
 elif command -v yarn >/dev/null 2>&1; then
   yarn global add "$PACKAGE"
-elif command -v bun >/dev/null 2>&1; then
-  bun add -g "$PACKAGE"
 else
   echo ""
   echo "Error: no supported package manager found."
-  echo "Install Node.js from https://nodejs.org, then run:"
-  echo "  npm install -g $PACKAGE"
+  echo "Install Bun from https://bun.sh, then run:"
+  echo "  bun add --global $PACKAGE"
   exit 1
 fi
 

@@ -1,7 +1,7 @@
 .PHONY: test lint fmt fmt-check verify
 
-test:      ; npm test
-lint:      ; npm run lint
-fmt:       ; npm run format
-fmt-check: ; npm run format:check
-verify:    ; npm run format:check && npm run lint && npm test
+test:      ; bun test
+lint:      ; bun run lint
+fmt:       ; bun run format
+fmt-check: ; bun run format:check
+verify:    ; bun run format:check && bun run lint && bun test

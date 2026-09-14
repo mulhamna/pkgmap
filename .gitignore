@@ -1,6 +1,7 @@
 # macOS
 .DS_Store
 .claude
+.arsy
 
 # pkgmap export output
 pkgmap-export.json
@@ -9,6 +10,7 @@ pkgmap-export.json
 logs
 *.log
 npm-debug.log*
+bun-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*

@@ -136,10 +136,9 @@ Warnings: 1
 
 ## Prerequisites
 
-- **Node.js >= 20** for the supported runtime baseline
-- **npm** bundled with Node.js
+- **Bun >= 1.1** for the supported runtime baseline
 
-> If Node.js is not installed yet, get it from [nodejs.org](https://nodejs.org) or use a version manager like [nvm](https://github.com/nvm-sh/nvm).
+> Install Bun from [bun.sh](https://bun.sh). Node.js is only required for the `node-versions` command and Node-specific package managers.
 
 ---
 
@@ -160,14 +159,10 @@ brew tap mulhamna/tap
 brew install pkgmap
 ```
 
-### Via npm / pnpm / yarn / volta / bun
+### Via Bun
 
 ```bash
-npm install -g @mulham28/pkgmap
-pnpm add -g @mulham28/pkgmap
-yarn global add @mulham28/pkgmap
-volta install @mulham28/pkgmap
-bun add -g @mulham28/pkgmap
+bun add --global @mulham28/pkgmap
 ```
 
 ### Manual install
@@ -175,13 +170,13 @@ bun add -g @mulham28/pkgmap
 ```bash
 git clone https://github.com/mulhamna/pkgmap.git
 cd pkgmap
-npm install
-npm link
+bun install
+bun link
 
 pkgmap
 ```
 
-> Tip for macOS/Linux: if `npm link` fails with a permission error, use `nvm` or fix your npm global prefix instead of relying on sudo.
+> Tip for macOS/Linux: if `bun link` fails with a permission error, fix your Bun global bin configuration instead of relying on sudo.
 >
 > Tip for Windows: run PowerShell or CMD as Administrator before `npm link`.
 
