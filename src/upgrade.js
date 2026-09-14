@@ -1,6 +1,5 @@
 import chalk from 'chalk'
 import ora from 'ora'
-import { spawnSync } from 'child_process'
 
 import { scanAll, printIssueSummary } from './index.js'
 import { isAvailable, getCliOptionValue, hasCliFlag, optsOf } from './utils.js'
@@ -200,18 +199,18 @@ export async function runUpgrade(options) {
     }
 
     console.log(chalk.cyan(`\n→ Upgrading ${manager} with: ${command}`))
-    const child = spawnSync(command, {
-      stdio: 'inherit',
-      shell: true,
-      env: process.env,
+    const child = Bun.spawnSync({
+      cmd: ['sh', '-c', command],
+      stdout: 'inherit',
+      stderr: 'inherit',
     })
 
-    if (child.status === 0) {
+    if (child.exitCode === 0) {
       results.push({ manager, status: 'success' })
       continue
     }
 
-    const failureMessage = child.error?.message || `command exited with code ${child.status ?? 1}`
+    const failureMessage = `command exited with code ${child.exitCode ?? 1}`
     warnings.push({ manager, message: failureMessage, level: 'error' })
     results.push({ manager, status: 'failed', message: failureMessage })
   }

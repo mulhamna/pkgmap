@@ -1,13 +1,23 @@
-import { execSync } from 'child_process'
-
 export function isAvailable(cmd) {
-  const which = process.platform === 'win32' ? 'where' : 'which'
-  try {
-    execSync(`${which} ${cmd}`, { stdio: 'ignore' })
-    return true
-  } catch {
-    return false
+  return Boolean(Bun.which(cmd))
+}
+
+export function runCommand(command, { timeout = 10000, stderr = 'ignore' } = {}) {
+  const shell = process.platform === 'win32' ? ['cmd.exe', '/d', '/s', '/c'] : ['sh', '-c']
+  const result = Bun.spawnSync({
+    cmd: [...shell, command],
+    stdout: 'pipe',
+    stderr,
+    timeout,
+  })
+
+  if (result.exitCode !== 0) {
+    const error = new Error(`command exited with code ${result.exitCode ?? 1}`)
+    Object.assign(error, result)
+    throw error
   }
+
+  return result.stdout.toString()
 }
 
 // Read a flag value straight from argv — commander fallback for nested commands.
@@ -55,8 +65,8 @@ export async function runScanner({
 
   try {
     const cmd = typeof command === 'function' ? command(binName) : command
-    const raw = execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'], timeout }).toString()
-    return { manager, packages: parse(raw) }
+    const raw = runCommand(cmd, { timeout })
+    return { manager, packages: await parse(raw) }
   } catch (err) {
     if (err.message?.includes('EACCES') || err.message?.includes('permission')) {
       console.warn(`⚠ ${manager}: ${permissionHint || 'permission denied. Try running with sudo.'}`)

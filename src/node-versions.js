@@ -1,4 +1,3 @@
-import { readdirSync, readFileSync } from 'fs'
 import { join } from 'path'
 import { homedir } from 'os'
 import chalk from 'chalk'
@@ -8,15 +7,18 @@ import { renderBanner } from './display/table.js'
 
 function safeReaddir(dir) {
   try {
-    return readdirSync(dir, { withFileTypes: true })
+    return [...new Bun.Glob('*').scanSync({ cwd: dir, onlyFiles: false })].map((name) => ({
+      name,
+      isDirectory: () => true,
+    }))
   } catch {
     return []
   }
 }
 
-function safeReadJson(path) {
+async function safeReadJson(path) {
   try {
-    return JSON.parse(readFileSync(path, 'utf8'))
+    return await Bun.file(path).json()
   } catch {
     return null
   }
@@ -27,7 +29,7 @@ const SKIP_NAMES = new Set(['.bin', '.cache', 'npm', 'corepack'])
 
 // Read installed packages from one `node_modules` directory. Pure + injectable
 // so the scope/skip rules can be tested without touching the filesystem.
-export function readGlobalPackages(
+export async function readGlobalPackages(
   modulesDir,
   { readdir = safeReaddir, readJson = safeReadJson } = {}
 ) {
@@ -42,13 +44,13 @@ export function readGlobalPackages(
       const scopeDir = join(modulesDir, name)
       for (const inner of readdir(scopeDir)) {
         if (!inner.isDirectory() || inner.name.startsWith('.')) continue
-        const pkg = readJson(join(scopeDir, inner.name, 'package.json'))
+        const pkg = await readJson(join(scopeDir, inner.name, 'package.json'))
         packages.push({ name: `${name}/${inner.name}`, version: pkg?.version || 'unknown' })
       }
       continue
     }
 
-    const pkg = readJson(join(modulesDir, name, 'package.json'))
+    const pkg = await readJson(join(modulesDir, name, 'package.json'))
     packages.push({ name, version: pkg?.version || 'unknown' })
   }
 
@@ -93,14 +95,17 @@ function nodeVersionSources() {
   return sources
 }
 
-export function collectNodeVersions() {
-  return nodeVersionSources()
-    .map(({ manager, nodeVersion, modulesDir }) => ({
+export async function collectNodeVersions() {
+  const versions = await Promise.all(
+    nodeVersionSources().map(async ({ manager, nodeVersion, modulesDir }) => ({
       manager,
       nodeVersion,
       path: modulesDir,
-      packages: readGlobalPackages(modulesDir),
+      packages: await readGlobalPackages(modulesDir),
     }))
+  )
+
+  return versions
     .filter((entry) => entry.packages.length > 0)
     .sort(
       (a, b) => a.manager.localeCompare(b.manager) || a.nodeVersion.localeCompare(b.nodeVersion)
@@ -144,7 +149,7 @@ export async function runNodeVersions(options) {
   const resolvedOptions = typeof options?.opts === 'function' ? options.opts() : options
   const doJson = Boolean(resolvedOptions?.json || options?.parent?.opts?.().json)
 
-  const versions = collectNodeVersions()
+  const versions = await collectNodeVersions()
 
   if (doJson) {
     console.log(JSON.stringify({ generatedAt: new Date().toISOString(), versions }, null, 2))

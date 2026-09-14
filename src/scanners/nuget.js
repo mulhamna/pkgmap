@@ -1,24 +1,20 @@
-import { execSync } from 'child_process'
-import { readdirSync } from 'fs'
 import { join } from 'path'
-import { isAvailable } from '../utils.js'
+import { isAvailable, runCommand } from '../utils.js'
 
 function getNugetGlobalPackagesPath() {
   if (isAvailable('dotnet')) {
-    const raw = execSync('dotnet nuget locals global-packages --list', {
-      stdio: ['ignore', 'pipe', 'ignore'],
+    const raw = runCommand('dotnet nuget locals global-packages --list', {
       timeout: process.platform === 'win32' ? 30000 : 10000,
-    }).toString()
+    })
 
     const match = raw.match(/global-packages\s*:\s*(.+)$/im)
     if (match) return match[1].trim()
   }
 
   if (isAvailable('nuget')) {
-    const raw = execSync('nuget locals global-packages -list', {
-      stdio: ['ignore', 'pipe', 'ignore'],
+    const raw = runCommand('nuget locals global-packages -list', {
       timeout: process.platform === 'win32' ? 30000 : 10000,
-    }).toString()
+    })
 
     const match = raw.match(/global-packages\s*:\s*(.+)$/im)
     if (match) return match[1].trim()
@@ -34,21 +30,24 @@ export default async function scan() {
     const globalPackagesPath = getNugetGlobalPackagesPath()
     if (!globalPackagesPath) return null
 
-    const packageDirs = readdirSync(globalPackagesPath, { withFileTypes: true }).filter((d) =>
-      d.isDirectory()
-    )
+    const packageDirs = [
+      ...new Bun.Glob('*').scanSync({ cwd: globalPackagesPath, onlyFiles: false }),
+    ]
 
     const packages = []
 
-    for (const packageDir of packageDirs) {
-      const versionDirs = readdirSync(join(globalPackagesPath, packageDir.name), {
-        withFileTypes: true,
-      }).filter((d) => d.isDirectory())
+    for (const packageName of packageDirs) {
+      const versionDirs = [
+        ...new Bun.Glob('*').scanSync({
+          cwd: join(globalPackagesPath, packageName),
+          onlyFiles: false,
+        }),
+      ]
 
-      for (const versionDir of versionDirs) {
+      for (const version of versionDirs) {
         packages.push({
-          name: packageDir.name,
-          version: versionDir.name,
+          name: packageName,
+          version,
           type: 'dotnet',
         })
       }

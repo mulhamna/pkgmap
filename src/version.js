@@ -1,6 +1,3 @@
-import { createRequire } from 'module'
-
-const require = createRequire(import.meta.url)
-const { version } = require('../package.json')
+const { version } = await Bun.file(new URL('../package.json', import.meta.url)).json()
 
 export const APP_VERSION = version

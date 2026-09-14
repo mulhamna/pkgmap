@@ -1,5 +1,4 @@
-import { execSync } from 'child_process'
-import { isAvailable } from '../utils.js'
+import { isAvailable, runCommand } from '../utils.js'
 
 function parseCargoInstallList(raw) {
   const packages = []
@@ -22,10 +21,7 @@ export default async function scan() {
   if (!isAvailable('cargo')) return null
 
   try {
-    const raw = execSync('cargo install --list', {
-      stdio: ['ignore', 'pipe', 'pipe'],
-      timeout: 10000,
-    }).toString()
+    const raw = runCommand('cargo install --list', { timeout: 10000, stderr: 'pipe' })
 
     const packages = parseCargoInstallList(raw)
 

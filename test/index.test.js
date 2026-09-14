@@ -1,4 +1,4 @@
-import test from 'node:test'
+import { test } from 'bun:test'
 import assert from 'node:assert/strict'
 
 import { filterDuplicatePackages, normalizeWarning } from '../src/index.js'
@@ -201,7 +201,7 @@ test('buildUpgradeCommand expands dynamic cargo package installs', () => {
   )
 })
 
-test('readGlobalPackages expands scopes and skips non-package entries', () => {
+test('readGlobalPackages expands scopes and skips non-package entries', async () => {
   const tree = {
     '/mods': ['typescript', 'eslint', '@scope', '.bin', 'npm'],
     '/mods/@scope': ['cli', '.cache'],
@@ -215,13 +215,16 @@ test('readGlobalPackages expands scopes and skips non-package entries', () => {
   }
   const readJson = (path) => versions[path] || null
 
-  assert.deepEqual(readGlobalPackages('/mods', { readdir, readJson }), [
+  assert.deepEqual(await readGlobalPackages('/mods', { readdir, readJson }), [
     { name: '@scope/cli', version: '1.0.0' },
     { name: 'eslint', version: 'unknown' },
     { name: 'typescript', version: '5.4.2' },
   ])
 })
 
-test('readGlobalPackages returns empty for missing or empty directories', () => {
-  assert.deepEqual(readGlobalPackages('/nope', { readdir: () => [], readJson: () => null }), [])
+test('readGlobalPackages returns empty for missing or empty directories', async () => {
+  assert.deepEqual(
+    await readGlobalPackages('/nope', { readdir: () => [], readJson: () => null }),
+    []
+  )
 })

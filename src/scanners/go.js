@@ -1,7 +1,5 @@
-import { execFileSync, execSync } from 'child_process'
-import { readdirSync, statSync } from 'fs'
 import { join } from 'path'
-import { isAvailable } from '../utils.js'
+import { isAvailable, runCommand } from '../utils.js'
 
 export function parseGoBinaryMetadata(raw, binaryName) {
   const lines = raw
@@ -30,19 +28,16 @@ export default async function scan() {
   if (!isAvailable('go')) return null
 
   try {
-    const gopath = execSync('go env GOPATH', {
-      stdio: ['ignore', 'pipe', 'pipe'],
-      timeout: 10000,
-    })
-      .toString()
-      .trim()
+    const gopath = runCommand('go env GOPATH', { timeout: 10000 }).trim()
 
     if (!gopath) return null
 
     const binDir = join(gopath, 'bin')
     let binaries
     try {
-      binaries = readdirSync(binDir).filter((f) => !f.startsWith('.'))
+      binaries = [...new Bun.Glob('*').scanSync({ cwd: binDir, onlyFiles: true })].filter(
+        (file) => !file.startsWith('.')
+      )
     } catch {
       return null
     }
@@ -55,12 +50,11 @@ export default async function scan() {
       const binaryPath = join(binDir, name)
 
       try {
-        if (!statSync(binaryPath).isFile()) continue
+        if (!(await Bun.file(binaryPath).exists())) continue
 
-        const raw = execFileSync('go', ['version', '-m', binaryPath], {
-          stdio: ['ignore', 'pipe', 'ignore'],
+        const raw = runCommand(`go version -m "${binaryPath.replaceAll('"', '\\"')}"`, {
           timeout: 2000,
-        }).toString()
+        })
 
         const pkg = parseGoBinaryMetadata(raw, name)
         if (pkg) packages.push(pkg)

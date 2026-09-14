@@ -1,5 +1,12 @@
-import { readdirSync } from 'fs'
 import { join } from 'path'
+
+function directories(root) {
+  return [...new Bun.Glob('*/').scanSync({ cwd: root })].map((entry) => entry.replace(/\/$/, ''))
+}
+
+function files(root) {
+  return [...new Bun.Glob('*').scanSync({ cwd: root, onlyFiles: true })]
+}
 
 function getMavenRepoRoot() {
   const home = process.env.USERPROFILE || process.env.HOME
@@ -8,9 +15,7 @@ function getMavenRepoRoot() {
 }
 
 function walkMavenRepo(root, relativeParts = [], collector = []) {
-  const entries = readdirSync(root, { withFileTypes: true })
-
-  const hasFiles = entries.some((entry) => entry.isFile())
+  const hasFiles = files(root).length > 0
   if (hasFiles && relativeParts.length >= 3) {
     const version = relativeParts[relativeParts.length - 1]
     const artifact = relativeParts[relativeParts.length - 2]
@@ -23,10 +28,9 @@ function walkMavenRepo(root, relativeParts = [], collector = []) {
     return collector
   }
 
-  for (const entry of entries) {
-    if (!entry.isDirectory()) continue
-    const nextParts = [...relativeParts, entry.name]
-    const fullPath = join(root, entry.name)
+  for (const name of directories(root)) {
+    const nextParts = [...relativeParts, name]
+    const fullPath = join(root, name)
     walkMavenRepo(fullPath, nextParts, collector)
   }
 
