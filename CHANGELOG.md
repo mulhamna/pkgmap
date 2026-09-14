@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.12.2...pkgmap-v2.0.0) (2026-09-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate runtime from Node.js to Bun ([#123](https://github.com/mulhamna/pkgmap/issues/123))
+
+### Features
+
+* migrate runtime from Node.js to Bun ([#123](https://github.com/mulhamna/pkgmap/issues/123)) ([155d98f](https://github.com/mulhamna/pkgmap/commit/155d98f50085e580721b4fb4f70f25e972678833))
+
 ## [1.12.2](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.12.1...pkgmap-v1.12.2) (2026-07-27)
 
 
