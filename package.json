@@ -2,6 +2,7 @@
   "name": "@mulham28/pkgmap",
   "version": "1.12.2",
   "type": "module",
+  "packageManager": "bun@1.3.14",
   "description": "One command to see everything installed on your machine",
   "keywords": [
     "cli",
@@ -42,18 +43,18 @@
   },
   "license": "MIT",
   "engines": {
-    "node": ">=20.0.0"
+    "bun": ">=1.1.0"
   },
   "bin": {
     "pkgmap": "bin/pkgmap.js"
   },
   "scripts": {
     "lint": "eslint src/ test/",
-    "test": "node --test",
+    "test": "bun test",
     "format": "prettier --write src/ test/",
     "format:check": "prettier --check src/ test/",
-    "release:check": "node scripts/sync-version-check.mjs",
-    "start": "node bin/pkgmap.js"
+    "release:check": "bun scripts/sync-version-check.mjs",
+    "start": "bun bin/pkgmap.js"
   },
   "dependencies": {
     "chalk": "^6.0.0",

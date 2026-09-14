@@ -1,5 +1,8 @@
-import { readdirSync } from 'fs'
 import { join } from 'path'
+
+function directories(root) {
+  return [...new Bun.Glob('*/').scanSync({ cwd: root })].map((entry) => entry.replace(/\/$/, ''))
+}
 
 function getGradleCacheRoot() {
   const home = process.env.USERPROFILE || process.env.HOME
@@ -12,25 +15,20 @@ export default async function scan() {
   if (!root) return null
 
   try {
-    const groupDirs = readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory())
     const packages = []
 
-    for (const groupDir of groupDirs) {
-      const groupPath = join(root, groupDir.name)
-      const artifactDirs = readdirSync(groupPath, { withFileTypes: true }).filter((d) =>
-        d.isDirectory()
-      )
+    for (const groupName of directories(root)) {
+      const groupPath = join(root, groupName)
+      const artifactDirs = directories(groupPath)
 
-      for (const artifactDir of artifactDirs) {
-        const artifactPath = join(groupPath, artifactDir.name)
-        const versionDirs = readdirSync(artifactPath, { withFileTypes: true }).filter((d) =>
-          d.isDirectory()
-        )
+      for (const artifactName of artifactDirs) {
+        const artifactPath = join(groupPath, artifactName)
+        const versionDirs = directories(artifactPath)
 
-        for (const versionDir of versionDirs) {
+        for (const version of versionDirs) {
           packages.push({
-            name: `${groupDir.name}:${artifactDir.name}`,
-            version: versionDir.name,
+            name: `${groupName}:${artifactName}`,
+            version,
             type: 'java',
           })
         }

@@ -1,10 +1,9 @@
 import ora from 'ora'
 import chalk from 'chalk'
-import { execSync } from 'child_process'
 
 import { renderBanner } from './display/table.js'
 import { renderPorts } from './display/ports.js'
-import { isAvailable, optsOf } from './utils.js'
+import { isAvailable, optsOf, runCommand } from './utils.js'
 
 function parsePsRow(raw) {
   const trimmed = raw.trim()
@@ -25,12 +24,7 @@ export function inspectPid(pid, platform = process.platform) {
 
   if (platform === 'win32') {
     try {
-      const raw = execSync(`tasklist /FI "PID eq ${pid}" /FO CSV /NH`, {
-        stdio: ['ignore', 'pipe', 'ignore'],
-        timeout: 10000,
-      })
-        .toString()
-        .trim()
+      const raw = runCommand(`tasklist /FI "PID eq ${pid}" /FO CSV /NH`, { timeout: 10000 }).trim()
 
       if (!raw || raw.startsWith('INFO:')) {
         return { healthStatus: 'orphan', reason: 'pid not found' }
@@ -43,10 +37,7 @@ export function inspectPid(pid, platform = process.platform) {
   }
 
   try {
-    const raw = execSync(`ps -o ppid=,stat=,comm= -p ${pid}`, {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 10000,
-    }).toString()
+    const raw = runCommand(`ps -o ppid=,stat=,comm= -p ${pid}`, { timeout: 10000 })
 
     const row = parsePsRow(raw)
     if (!row) return { healthStatus: 'orphan', reason: 'pid not found' }
@@ -239,10 +230,7 @@ function getActivePorts() {
       throw new Error('ss is required on Linux to inspect active ports.')
     }
 
-    const raw = execSync('ss -lntpH', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 10000,
-    }).toString()
+    const raw = runCommand('ss -lntpH', { timeout: 10000 })
 
     return parseLinuxPorts(raw)
   }
@@ -252,24 +240,15 @@ function getActivePorts() {
       throw new Error('lsof is required on macOS to inspect active ports.')
     }
 
-    const raw = execSync('lsof -nP -iTCP -sTCP:LISTEN', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 10000,
-    }).toString()
+    const raw = runCommand('lsof -nP -iTCP -sTCP:LISTEN', { timeout: 10000 })
 
     return parseMacPorts(raw)
   }
 
   if (process.platform === 'win32') {
-    const raw = execSync('netstat -ano -p tcp', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 10000,
-    }).toString()
+    const raw = runCommand('netstat -ano -p tcp', { timeout: 10000 })
 
-    const tasksRaw = execSync('tasklist /FO CSV /NH', {
-      stdio: ['ignore', 'pipe', 'ignore'],
-      timeout: 10000,
-    }).toString()
+    const tasksRaw = runCommand('tasklist /FO CSV /NH', { timeout: 10000 })
 
     return parseWindowsPorts(raw, tasksRaw)
   }

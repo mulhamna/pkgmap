@@ -1,6 +1,5 @@
 import ora from 'ora'
 import chalk from 'chalk'
-import { writeFileSync, readdirSync } from 'fs'
 
 import { renderAll } from './display/table.js'
 import { optsOf } from './utils.js'
@@ -54,7 +53,7 @@ export function filterDuplicatePackages(results) {
 const scannerDir = new URL('./scanners/', import.meta.url)
 export const ALL_SCANNERS = Object.fromEntries(
   await Promise.all(
-    readdirSync(scannerDir)
+    [...new Bun.Glob('*.js').scanSync({ cwd: scannerDir.pathname })]
       .filter((file) => file.endsWith('.js'))
       .sort()
       .map(async (file) => [file.slice(0, -3), (await import(`./scanners/${file}`)).default])
@@ -175,7 +174,7 @@ export async function run(options) {
   }
 
   if (doExport) {
-    writeFileSync('pkgmap-export.json', JSON.stringify(exportData, null, 2))
+    await Bun.write('pkgmap-export.json', JSON.stringify(exportData, null, 2))
     console.log(chalk.green('✔ Exported to pkgmap-export.json'))
   }
 
