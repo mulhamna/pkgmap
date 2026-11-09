@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/mulhamna/pkgmap/compare/pkgmap-v2.0.2...pkgmap-v2.0.3) (2026-11-09)
+
+
+### Bug Fixes
+
+* **ci:** raise tarball retry window to cover npm lag ([#150](https://github.com/mulhamna/pkgmap/issues/150)) ([6af7b30](https://github.com/mulhamna/pkgmap/commit/6af7b3041bebb09aba1441f21d6bd86bbbfefa92))
+
 ## [2.0.2](https://github.com/mulhamna/pkgmap/compare/pkgmap-v2.0.1...pkgmap-v2.0.2) (2026-11-09)
 
 
