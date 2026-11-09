@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v2.0.0...pkgmap-v2.0.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* update lockfile to resolve high severity audit findings ([#146](https://github.com/mulhamna/pkgmap/issues/146)) ([b8efd6a](https://github.com/mulhamna/pkgmap/commit/b8efd6a1ca813ce1333a13de3389fe33b52f2895))
+
 ## [2.0.0](https://github.com/mulhamna/pkgmap/compare/pkgmap-v1.12.2...pkgmap-v2.0.0) (2026-09-14)
 
 
