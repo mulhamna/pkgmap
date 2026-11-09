@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/mulhamna/pkgmap/compare/pkgmap-v2.0.1...pkgmap-v2.0.2) (2026-11-09)
+
+
+### Bug Fixes
+
+* **ci:** extend npm tarball retry window in homebrew tap update ([#148](https://github.com/mulhamna/pkgmap/issues/148)) ([d503a5c](https://github.com/mulhamna/pkgmap/commit/d503a5ce881aab7d09ccbf1bc52ba3db7a0396fc))
+
 ## [2.0.1](https://github.com/mulhamna/pkgmap/compare/pkgmap-v2.0.0...pkgmap-v2.0.1) (2026-11-09)
 
 
