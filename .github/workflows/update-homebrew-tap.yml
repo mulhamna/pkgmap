@@ -32,9 +32,9 @@ jobs:
           VERSION=${{ steps.pkg.outputs.version }}
           URL="https://registry.npmjs.org/@mulham28/pkgmap/-/pkgmap-${VERSION}.tgz"
 
-          # Retry up to 5x — npm CDN may lag slightly after publish
+          # Retry up to 12x (~3 min) — npm CDN may lag after publish
           SHA=""
-          for i in $(seq 1 5); do
+          for i in $(seq 1 12); do
             if curl -fsSL "$URL" -o /tmp/pkgmap.tgz 2>/dev/null; then
               SHA=$(sha256sum /tmp/pkgmap.tgz | awk '{print $1}')
               break
